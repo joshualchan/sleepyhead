@@ -1,10 +1,14 @@
-import { Injectable} from '@angular/core';
+import { Component,Injectable} from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
 
 declare var gapi: any;
-
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
 @Injectable({
   providedIn: 'root'
 })
@@ -36,9 +40,8 @@ export class AuthService {
     });
 
   }
-  myFunc(){
-    console.log("hello")
-  }
+
+  
 
   async login() {
     const googleAuth = gapi.auth2.getAuthInstance()
