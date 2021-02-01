@@ -1,32 +1,29 @@
 <ion-app>
+  
   <main>
     <h3>Google Calendar + Firebase</h3>
     <p>Welcome to AngularFirebase world </p>
     
-    <div *ngIf="auth.user$ | async as user">
+    <div *ngIf="auth.user$ | async as user else elseBlock">
+ 
         <h3>Logged in as {{ user.displayName }}</h3>
         <img src="{{ user.photoURL }}" width="50px">
-    </div>
-
-    <ion-button (click)="auth.login()" class="button is-danger">Login with Google</ion-button>
-
-    <ion-button (click)="auth.logout()" class="button">Logout</ion-button>
-
-    <hr>
-
-    <div *ngIf="auth.user$ | async">
+        <ion-button (click)="auth.logout()" class="button">Logout</ion-button>
         <ion-button (click)="auth.getCalendar()" class="button is-success">Get Google Calendar</ion-button>
         <div *ngFor="let item of auth.calendarItems">
-            <h3>{{ item.summary }} - {{ item.status }}</h3>
-            <p><em>Created {{ item.created }}</em></p>
-            <p>{{ item.description }}</p>
+            <h6>{{ item.summary }}</h6>
+            <h6>{{ item.start.dateTime }}</h6>
             <hr>
         </div>
-
     </div>
+    <ng-template #elseBlock>
+      <h3>Google Calendar + Firebase</h3>
+      <p>Welcome to AngularFirebase world </p>
+        <ion-button (click)="auth.login()" class="button is-danger">Login with Google</ion-button>
+    </ng-template>
 
   </main>
-  <!--<ion-router-outlet></ion-router-outlet>this breaks the button functionality-->
+  
 </ion-app>
 
 

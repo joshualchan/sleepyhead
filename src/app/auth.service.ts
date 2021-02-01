@@ -38,7 +38,6 @@ export class AuthService {
       gapi.client.load('calendar', 'v3', () => console.log('loaded calendar'));
 
     });
-
   }
 
   
@@ -78,10 +77,13 @@ export class AuthService {
       orderBy: 'startTime'
     })
 
-    console.log(events)
+    
+    var tomorrow = new Date();
+    tomorrow.setDate(new Date().getDate()+1);
+    this.calendarItems = events.result.items
+    var date = new Date(this.calendarItems[0].start.dateTime)
+    this.calendarItems = this.calendarItems.filter(event => new Date(event.start.dateTime) < tomorrow)
 
-    this.calendarItems = events.result.items;
-  
   }
 
 
