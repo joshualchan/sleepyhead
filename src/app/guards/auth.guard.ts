@@ -14,14 +14,29 @@ export class AuthGuard implements CanLoad {
     private router: Router
   ) {}
 
-  canLoad() {
-    if (this.authenticationService.isAuthenticated) {
-      console.log('AuthGuard returns true');
-      return true;
-    } else {
-      console.log('AuthGuard returns false');
-      this.router.navigateByUrl('/login');
-      return false;
-    }
+  // canLoad() {
+  //   if (this.authenticationService.user$) {
+  //     console.log('AuthGuard returns true for', this.authenticationService.user$);
+  //     return true;
+  //   } else {
+  //     console.log('AuthGuard returns false');
+  //     this.router.navigateByUrl('/login');
+  //     return false;
+  //   }
+  // }
+
+  canLoad(): Observable<boolean> {    
+    return this.authenticationService.user$.pipe(
+      filter(val => val !== null),
+      take(1),
+      map(user => {
+        if (user) {          
+          return true;
+        } else {          
+          this.router.navigateByUrl('/login')
+          return false;
+        }
+      })
+    );
   }
 }

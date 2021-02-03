@@ -22,8 +22,6 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
-    console.log('logging in with Google');
-
     // lock and show spinner while loading
     const loading = await this.loadingController.create();
     await loading.present();
