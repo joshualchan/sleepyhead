@@ -28,7 +28,9 @@ export class LoginPage implements OnInit {
 
     if (this.authenticationService.login()) {
       await loading.dismiss();
-      this.router.navigateByUrl('/tabs', { replaceUrl: true});
+      // only here to test database configuration
+      // this.router.navigateByUrl('/tabs', { replaceUrl: true});
+      this.router.navigateByUrl('/setup', { replaceUrl: true});
     } else {
       await loading.dismiss();
       const alert = await this.alertController.create({
