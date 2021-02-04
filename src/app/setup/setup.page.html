@@ -1,9 +1,26 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center" size="large">sleepyhead</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
-  <!-- only here to test database configuration -->
-  <ion-button (click)="createUser()" expand="block">
-    create user
-  </ion-button>
-  <ion-button (click)="logUser()" expand="block">
-    log user
-  </ion-button>
+  <ion-text color="tertiary">
+    <h2>Welcome {{(authenticationService.user$).displayName}}</h2>
+    <h2>Tell us a few things about yourself before we get started</h2>
+  </ion-text>
+
+  <form [formGroup]="setUpForm" (ngSubmit)="setUp()">
+    <ion-item lines="none">
+      <ion-label position="stacked">Age</ion-label>
+      <ion-input formControlName="age" type="number" color="tertiary"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label position="stacked">Desired hours of sleep per night</ion-label>
+      <ion-input formControlName="goal" type="number" color="tertiary"></ion-input>
+    </ion-item>
+ 
+    <ion-button expand="block" type="submit" [disabled]="!setUpForm.valid">Confirm</ion-button>
+  </form>
 </ion-content>

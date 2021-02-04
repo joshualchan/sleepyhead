@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 
 import { AuthenticationService } from '../services/authentication.service';
+import { DatabaseService} from '../services/database.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginPage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private loadingController: LoadingController,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private databaseService: DatabaseService
   ) { }
 
   ngOnInit() {
@@ -26,12 +28,15 @@ export class LoginPage implements OnInit {
     const loading = await this.loadingController.create();
     await loading.present();
 
-    this.authenticationService.login().then(async (user) => {
-      await loading.dismiss();
-      // only here to test database configuration
-      // this.router.navigateByUrl('/tabs', { replaceUrl: true});
-      this.router.navigateByUrl('/setup', { replaceUrl: true});
-    }).catch(async (error) => {
+    this.authenticationService.login().then(async (user) => {  
+      this.databaseService.getUser(user.uid).then(async (userDoc) => {
+        await loading.dismiss();
+        this.router.navigateByUrl('/tabs', { replaceUrl: true});
+      }).catch(async () => {
+        await loading.dismiss();
+        this.router.navigateByUrl('/setup', { replaceUrl: true});
+      });
+    }).catch(async () => {
       await loading.dismiss();
       const alert = await this.alertController.create({
         header: 'Login failed',

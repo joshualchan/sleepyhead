@@ -1,0 +1,26 @@
+ion-content {
+    text-align: center;
+    --padding-top: 44px;
+
+    form {
+        ion-item {
+            --padding-top: 22px;
+            --background: transparent;
+            --border-width: 0px;
+
+            ion-label {
+                --color: #F2BE03;
+            }
+
+            ion-input {
+                border: solid 1px;
+                border-radius: 10px;
+                --padding-start: 10px;
+            }
+        }
+
+        ion-button {
+            margin-top: 44px;
+        }
+    }
+}
