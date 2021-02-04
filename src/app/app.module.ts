@@ -13,6 +13,10 @@ import { AppComponent } from './app.component';
 
 import { environment } from '../environments/environment';
 
+// initializeApp twice, one for vanilla js firebase, one for angularfire
+import firebase from 'firebase/app';
+firebase.initializeApp(environment.firebase);
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
