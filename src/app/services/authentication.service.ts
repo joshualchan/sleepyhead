@@ -56,14 +56,16 @@ export class AuthenticationService {
     const token = googleUser.getAuthResponse().id_token;
     const credential = firebase.auth.GoogleAuthProvider.credential(token);
 
-    return await this.afAuth.signInWithCredential(credential).then((user) => {
+    const signedInUser = await this.afAuth.signInWithCredential(credential);
+    if (signedInUser) {
       from(Storage.set({ key: AUTH_KEY, value: 'true'}));
       // this.isAuthenticated.next(true);
-      return user;
-    }).catch((error) => {
-      console.log('Google Auth failed:', error);
-      return error;
-    });
+      console.log("auth login user:", signedInUser.user);
+      return signedInUser.user;
+    } else {
+      console.log('Google Auth failed');
+      return Promise.reject();
+    }
   }
 
   // TODO: include logout in mock up
