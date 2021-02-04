@@ -48,7 +48,7 @@ export class AuthenticationService {
   //   }
   // }
 
-  async login() {
+  async login(): Promise<firebase.User> {
     console.log('Logging in with Google');
     const googleAuth = gapi.auth2.getAuthInstance();
     const googleUser = await googleAuth.signIn();
@@ -56,13 +56,13 @@ export class AuthenticationService {
     const token = googleUser.getAuthResponse().id_token;
     const credential = firebase.auth.GoogleAuthProvider.credential(token);
 
-    await this.afAuth.signInWithCredential(credential).then(() => {
+    return await this.afAuth.signInWithCredential(credential).then((user) => {
       from(Storage.set({ key: AUTH_KEY, value: 'true'}));
       // this.isAuthenticated.next(true);
-      return true;
+      return user;
     }).catch((error) => {
       console.log('Google Auth failed:', error);
-      return false;
+      return error;
     });
   }
 

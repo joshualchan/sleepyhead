@@ -26,12 +26,12 @@ export class LoginPage implements OnInit {
     const loading = await this.loadingController.create();
     await loading.present();
 
-    if (this.authenticationService.login()) {
+    this.authenticationService.login().then(async (user) => {
       await loading.dismiss();
       // only here to test database configuration
       // this.router.navigateByUrl('/tabs', { replaceUrl: true});
       this.router.navigateByUrl('/setup', { replaceUrl: true});
-    } else {
+    }).catch(async (error) => {
       await loading.dismiss();
       const alert = await this.alertController.create({
         header: 'Login failed',
@@ -39,7 +39,7 @@ export class LoginPage implements OnInit {
         buttons: ['OK'],
       });
       await alert.present();
-    }
+    });
   }
 
 }
