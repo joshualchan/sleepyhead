@@ -13,15 +13,14 @@ export class DatabaseService {
     this.db = firebase.firestore();
   }
 
-  isUser(userid): boolean {
-    return this.db.collection("users").doc(userid).get().then((doc) => {
-      if (doc.exists) {
-        console.log(doc.data());
-        return true;
-      } else {
-        return false;
-      }
-    });
+  async getUser(userid) {
+    const doc = await this.db.collection("users").doc(userid).get();
+    if (doc.exists) {
+      return doc.data();
+    } else {
+      console.log("no user ", userid);
+      return Promise.reject();
+    }
   }
 
   createUser(userid, age, goal) {
