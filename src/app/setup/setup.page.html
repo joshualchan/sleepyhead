@@ -5,19 +5,21 @@
 </ion-header>
 
 <ion-content>
-  <ion-text color="tertiary">
-    <h2>Welcome {{(authenticationService.user$).displayName}}</h2>
-    <h2>Tell us a few things about yourself before we get started</h2>
-  </ion-text>
+  <div *ngIf="authenticationService.user$ | async as user">
+    <ion-text color="tertiary">
+      <h2>Welcome {{user.displayName}}</h2>
+      <h2>Tell us a few things about yourself before we get started</h2>
+    </ion-text>
+  </div>
 
   <form [formGroup]="setUpForm" (ngSubmit)="setUp()">
     <ion-item lines="none">
-      <ion-label position="stacked">Age</ion-label>
+      <ion-label position="stacked" color="tertiary">Age</ion-label>
       <ion-input formControlName="age" type="number" color="tertiary"></ion-input>
     </ion-item>
 
     <ion-item lines="none">
-      <ion-label position="stacked">Desired hours of sleep per night</ion-label>
+      <ion-label position="stacked" color="tertiary">Desired hours of sleep per night</ion-label>
       <ion-input formControlName="goal" type="number" color="tertiary"></ion-input>
     </ion-item>
  

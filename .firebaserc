@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "sleepyhead-303421": {
+      "hosting": {
+        "app": [
+          "sleepyhead-303421"
+        ]
+      }
+    }
+  }
+}
