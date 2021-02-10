@@ -1,5 +1,7 @@
+// this service is actually a authentication AND calendar service
+
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 // capacitor is ionic's way to interact with the native system
 import { Plugins } from '@capacitor/core';
@@ -16,6 +18,7 @@ const AUTH_KEY = 'false';
 })
 export class AuthenticationService {
   user$: Observable<firebase.User>;
+  calendarItems: any[];
 
   constructor(public afAuth: AngularFireAuth) {
     this.initClient();
@@ -27,14 +30,14 @@ export class AuthenticationService {
   initClient() {
     gapi.load('client', () => {
       console.log('loaded Google API client');
-
       // It's OK to expose these credentials, they are client safe.
       gapi.client.init({
         apiKey: 'AIzaSyA3tFJiPaQO_yevCtglcH6C7La2d876x0o',
         clientId: '860267389565-fppo7d5kf6jeb83gigabcsekoj0ou5is.apps.googleusercontent.com',
         discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
         scope: 'https://www.googleapis.com/auth/calendar.events.readonly'
-      })
+      });
+      gapi.client.load('calendar', 'v3', () => console.log('loaded calendar'));
     });
   }
 
@@ -68,10 +71,27 @@ export class AuthenticationService {
     }
   }
 
-  // TODO: include logout in mock up
+  // TODO: include logout in mock up as well
   // logout(): Promise<void> {
   //   this.isAuthenticated.next(false);
   //   return Storage.remove({ key: AUTH_KEY});
   //   this.afAuth.signOut();
   // }
+
+  async getCalendar() {
+    const events = await gapi.client.calendar.events.list({
+      calendarId: 'primary',
+      timeMin: new Date().toISOString(),
+      showDeleted: false,
+      singleEvents: true,
+      maxResults: 10,
+      orderBy: 'startTime'
+    })
+
+    var tomorrow = new Date();
+    tomorrow.setDate(new Date().getDate()+1);
+    this.calendarItems = events.result.items
+    var date = new Date(this.calendarItems[0].start.dateTime) // g: hi! doing merge stuff, do we ever use this?
+    this.calendarItems = this.calendarItems.filter(event => new Date(event.start.dateTime) < tomorrow)
+  }
 }
