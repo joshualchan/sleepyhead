@@ -13,5 +13,13 @@
     </ion-toolbar>
   </ion-header>
 
+  <div *ngIf="auth.user$ | async">
+    <ion-button (click)="auth.getCalendar()" class="button is-success">Get Google Calendar</ion-button>
+    <div *ngFor="let item of auth.calendarItems">
+        <h3>{{ item.summary }} - {{ item.start.dateTime }} - {{ item.status }}</h3>
+        <hr>
+    </div>
+
+</div>  
   <app-explore-container name="Tab 3 page"></app-explore-container>
 </ion-content>

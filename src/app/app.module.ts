@@ -29,7 +29,8 @@ firebase.initializeApp(environment.firebase);
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    AuthService
   ],
   bootstrap: [AppComponent]
 })
