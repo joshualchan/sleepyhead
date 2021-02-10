@@ -13,13 +13,24 @@
     </ion-toolbar>
   </ion-header>
 
-  <div *ngIf="auth.user$ | async">
-    <ion-button (click)="auth.getCalendar()" class="button is-success">Get Google Calendar</ion-button>
-    <div *ngFor="let item of auth.calendarItems">
-        <h3>{{ item.summary }} - {{ item.start.dateTime }} - {{ item.status }}</h3>
-        <hr>
+  <h3>Google Calendar + Firebase</h3>
+  <p>Welcome to AngularFirebase world </p>
+  
+  <div *ngIf="authenticationService.user$ | async as user else elseBlock">
+    <h3>Logged in as {{ user.displayName }}</h3>
+    <img src="{{ user.photoURL }}" width="50px">
+    <!-- TODO: logout -->
+    <!-- <ion-button (click)="authenticationService.logout()" class="button">Logout</ion-button> -->
+    <ion-button (click)="authenticationService.getCalendar()" class="button is-success">Get Google Calendar</ion-button>
+    <div *ngFor="let item of authenticationService.calendarItems">
+      <h6>{{ item.summary }}</h6>
+      <h6>{{ item.start.dateTime }}</h6>
+      <hr>
     </div>
-
-</div>  
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  </div>
+  <ng-template #elseBlock>
+    <h3>Google Calendar + Firebase</h3>
+    <p>Welcome to AngularFirebase world</p>
+      <ion-button (click)="authenticationService.login()" class="button is-danger">Login with Google</ion-button>
+  </ng-template>
 </ion-content>
