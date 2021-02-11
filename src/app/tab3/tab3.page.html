@@ -1,36 +1,72 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <h3>Google Calendar + Firebase</h3>
-  <p>Welcome to AngularFirebase world </p>
-  
   <div *ngIf="authenticationService.user$ | async as user else elseBlock">
-    <h3>Logged in as {{ user.displayName }}</h3>
-    <img src="{{ user.photoURL }}" width="50px">
+    <h1>
+      Profile
+    </h1>
+    <h2>
+      About You
+    </h2>
+    <hr>
+    
+    <div>
+      <span style ="margin-right: 25px; margin-left: 10%">
+        <h5>Name</h5>
+          <div class = "about-you-labels">
+            <h3>Josh</h3>
+          </div>
+        </span>
+  
+      <span style="margin-left: 25px;">
+        <h5>Age</h5>
+          <div class = "about-you-labels">
+            <h3>20</h3>
+          </div>
+        </span>
+    </div>
+    
+   
+    <h2>
+      Daily Goals
+    </h2>
+    <hr>
+    <div>
+      <span style ="margin-right: 25px; margin-left: 10%">
+        <h5>Hours sleep</h5>
+        <div class = "about-you-labels">
+          <h3>8</h3>
+        </div>
+      </span>
+  
+      <span style="margin-left: 25px;">
+        <h5>Notify me</h5>
+        <div class = "about-you-labels">
+          <h3>30</h3>
+        </div>
+        <h5>mins before my bedtime</h5>
+      </span>
+
+    </div>
+    <h2>
+      Tomorrow's Events
+    </h2>
+    <hr>
+    <!--<img src="{{ user.photoURL }}" width="50px">-->
     <!-- TODO: logout -->
     <!-- <ion-button (click)="authenticationService.logout()" class="button">Logout</ion-button> -->
-    <ion-button (click)="authenticationService.getCalendar()" class="button is-success">Get Google Calendar</ion-button>
-    <div *ngFor="let item of authenticationService.calendarItems">
-      <h6>{{ item.summary }}</h6>
-      <h6>{{ item.start.dateTime }}</h6>
-      <hr>
+    
+
+    <div class="center">
+      <ion-button (click)="authenticationService.getCalendar()" class="button is-success">Get Google Calendar</ion-button>
     </div>
+  
+    <div *ngFor="let item of authenticationService.calendarItems">
+      <div class="events">
+        <h4 style="text-align:center">{{ item.summary }}</h4>
+        <h4 style="text-align:center">{{ item.start.dateTime }}</h4>
+      </div>
+    
+    </div>
+    
+
   </div>
-  <ng-template #elseBlock>
-    <h3>Google Calendar + Firebase</h3>
-    <p>Welcome to AngularFirebase world</p>
-      <ion-button (click)="authenticationService.login()" class="button is-danger">Login with Google</ion-button>
-  </ng-template>
 </ion-content>

@@ -1,0 +1,61 @@
+
+h1 {
+    color: #ffca22;
+    text-align: center;
+}
+
+h2 {
+    color: #ffca22;
+    padding-left: 10%;
+}
+h5 {
+    color: #ffca22;
+}
+h6 {
+    padding-left: 10%;
+    margin-bottom: 0;
+}
+hr { 
+    display: block; 
+    margin-before: 0.5em; 
+    margin-after: 0.5em; 
+    margin-start: auto; 
+    margin-end: auto; 
+    width: 80%;
+    overflow: hidden; 
+    border-style: inset; 
+    border-width: 1px;
+}
+
+input:read-only { 
+    background-color: white;
+    padding-left: 50px;
+}
+
+.events {
+    background-color: white;
+    color: black;
+    justify-content: center;
+    width: 80%;
+    margin-left: 10%;
+}
+
+.center {
+    text-align:center;
+}
+
+.about-you-labels{
+    background-color: white;
+    color: black;
+    justify-content: center;
+    //width: 25%;
+    //height: 20%;
+    margin-top:0;
+}
+
+span {
+    display:inline-block; 
+    width:100px;
+    position: relative;
+    top: 0;
+}
