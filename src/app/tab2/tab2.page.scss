@@ -1,0 +1,24 @@
+ion-content {
+    #homePgSection {
+        margin-top: 60px;
+        margin-bottom: 60px;
+        display: block; 
+        margin-left: auto;
+        margin-right: auto; 
+        width: 70%;
+
+        .text {
+            font-size: 20px;
+        }
+        .time {
+            font-size: 60px;
+        }
+    }
+
+    ion-button {
+        display: block; 
+        margin-left: auto;
+        margin-right: auto; 
+        width: 30%;
+    }
+}
