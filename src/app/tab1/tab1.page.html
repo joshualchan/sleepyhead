@@ -1,17 +1,48 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<!-- feelings page-->
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+<ion-content>
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-title class="ion-text-center" size="large">sleepyhead</ion-title>
     </ion-toolbar>
   </ion-header>
+  
+  <ion-text color="tertiary" class="ion-text-center">
+    <h1>this morning I feel...</h1>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" (click)="groggy()">
+          <ion-icon src="/assets/angry-regular.svg" color={{groggyColor}}></ion-icon>
+          <br>
+          groggy
+        </ion-col>
+        <ion-col size="6" (click)="sleepy()">
+          <ion-icon src="/assets/frown-open-regular.svg" color={{sleepyColor}}></ion-icon>
+          <br>
+          sleepy
+        </ion-col>
+      </ion-row>
+      <br>
+      <ion-row>
+        <ion-col size="6" (click)="refreshed()">
+          <ion-icon src="/assets/laugh-beam-regular.svg" color={{refreshedColor}}></ion-icon>
+          <br>
+          refreshed
+        </ion-col>
+        <ion-col size="6" (click)="mediocre()">
+          <ion-icon src="/assets/meh-regular.svg"  color={{mediocreColor}} ></ion-icon>
+          <br>
+          mediocre
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  </ion-text>
+
+  <ion-row>
+    <ion-col class="ion-text-center">
+      <ion-button shape="round" (click)="confirmButton()">confirm</ion-button>
+    </ion-col>
+  </ion-row>
+
 </ion-content>
