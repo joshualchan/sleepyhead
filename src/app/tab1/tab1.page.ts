@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -7,7 +8,9 @@ import { Component } from '@angular/core';
 })
 export class Tab1Page {
 
-  constructor() {}
+  constructor(
+    private router: Router
+  ) {}
 
   public groggyColor:string = "secondary"; 
   public sleepyColor:string = "secondary"; 
@@ -24,10 +27,9 @@ export class Tab1Page {
     this.refreshedColor="secondary";
     this.mediocreColor="secondary";
     if (this.clickToggle) { // if feeling has been clicked
-      // add nav stuff
-
-
+      this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
       return this.feeling; // switch to add feeling to db 
+      
     }
   }
 
