@@ -27,6 +27,7 @@ export class Tab1Page {
     this.refreshedColor="secondary";
     this.mediocreColor="secondary";
     if (this.clickToggle) { // if feeling has been clicked
+      this.clickToggle = false; 
       this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
       return this.feeling; // switch to add feeling to db 
       
