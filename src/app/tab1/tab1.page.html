@@ -1,12 +1,11 @@
 <!-- feelings page-->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center" size="large">sleepyhead</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
-  <ion-header [translucent]="true">
-    <ion-toolbar color="primary">
-      <ion-title class="ion-text-center" size="large">sleepyhead</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  
   <ion-text color="tertiary" class="ion-text-center">
     <h1>this morning I feel...</h1>
     <ion-grid>
@@ -36,7 +35,6 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-
   </ion-text>
 
   <ion-row>
@@ -44,5 +42,4 @@
       <ion-button shape="round" (click)="confirmButton()">confirm</ion-button>
     </ion-col>
   </ion-row>
-
 </ion-content>

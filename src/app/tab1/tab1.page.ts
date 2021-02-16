@@ -12,20 +12,20 @@ export class Tab1Page {
     private router: Router
   ) {}
 
-  public groggyColor:string = "secondary"; 
-  public sleepyColor:string = "secondary"; 
-  public refreshedColor:string = "secondary";
-  public mediocreColor:string = "secondary";
+  public groggyColor:string = "light"; 
+  public sleepyColor:string = "light"; 
+  public refreshedColor:string = "light";
+  public mediocreColor:string = "light";
   private clickToggle:boolean = false; //true if one feeing already clicked
 
   private feeling:string = ""; // switch to enum? that might be hard to send to db ? 
   
 
    confirmButton() {
-    this.groggyColor="secondary";
-    this.sleepyColor="secondary";
-    this.refreshedColor="secondary";
-    this.mediocreColor="secondary";
+    this.groggyColor="light";
+    this.sleepyColor="light";
+    this.refreshedColor="light";
+    this.mediocreColor="light";
     if (this.clickToggle) { // if feeling has been clicked
       this.clickToggle = false; 
       this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
