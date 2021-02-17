@@ -8,18 +8,18 @@
     </h2>
     <hr>
     
-    <div>
+    <div *ngIf="authenticationService.user$ | async as user">
       <span style ="margin-right: 25px; margin-left: 10%">
         <h5>Name</h5>
           <div class = "about-you-labels">
-            <h3>Josh</h3>
+            <h3>{{user.displayName}}</h3>
           </div>
         </span>
   
       <span style="margin-left: 25px;">
         <h5>Age</h5>
           <div class = "about-you-labels">
-            <h3>20</h3>
+            <h3>{{returnAge()}}</h3>
           </div>
         </span>
     </div>
@@ -33,7 +33,7 @@
       <span style ="margin-right: 25px; margin-left: 10%">
         <h5>Hours sleep</h5>
         <div class = "about-you-labels">
-          <h3>8</h3>
+          <h3>{{returnGoal()}}</h3>
         </div>
       </span>
   
