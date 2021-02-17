@@ -33,16 +33,16 @@ export class DatabaseService {
   }
 
   // these functions have not been tested
-  // getAge(userid) {
-  //   return this.db.collection("users").doc(userid).get().then((doc) => {
-  //     if (doc.exists) {
-  //       return doc.data().age;
-  //     } else {
-  //       console.log("Can not get age");
-  //       return -1;
-  //     }
-  //   });
-  // }
+  getAge(userid) {
+    return this.db.collection("users").doc(userid).get().then((doc) => {
+      if (doc.exists) {
+        return doc.data().age;
+      } else {
+        console.log("Can not get age");
+        return -1;
+      }
+    });
+  }
 
   // getGoal(userid) {
   //   return this.db.collection("users").doc(userid).get().then((doc) => {
