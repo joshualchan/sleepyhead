@@ -17,18 +17,17 @@ export class Tab1Page {
     private databaseService: DatabaseService
   ) {}
 
-  public groggyColor:string = "secondary"; 
-  public sleepyColor:string = "secondary"; 
-  public refreshedColor:string = "secondary";
-  public mediocreColor:string = "secondary";
+  public sleepyColor:string = "light"; 
+  public refreshedColor:string = "light";
+  public mediocreColor:string = "light";
   private clickToggle:boolean = false; //true if one feeing already clicked
 
   private feeling:string = ""; // switch to enum? that might be hard to send to db ? 
 
    confirmButton() {
-    this.groggyColor="secondary";
-    this.refreshedColor="secondary";
-    this.mediocreColor="secondary";
+    this.sleepyColor="light";
+    this.refreshedColor="light";
+    this.mediocreColor="light";
     if (this.clickToggle) { // if feeling has been clicked
       this.clickToggle = false; 
       this.databaseService.updateFeeling(this.feeling);
@@ -40,14 +39,13 @@ export class Tab1Page {
   }
 
   // functions for clicking feelings icons 
-  groggy() {
-    this.groggyColor="success";
+  sleepy() {
+    this.sleepyColor="success";
     this.clickToggle = true; 
-    this.feeling = "groggy";
+    this.feeling = "sleepy";
 
-    this.refreshedColor="secondary";
-    this.mediocreColor="secondary";
-
+    this.refreshedColor="light";
+    this.mediocreColor="light";
   }
 
   refreshed() {
@@ -55,9 +53,8 @@ export class Tab1Page {
     this.clickToggle = true; 
     this.feeling = "refreshed";
 
-    this.groggyColor="secondary";
-    this.mediocreColor="secondary";
-    
+    this.sleepyColor="light";
+    this.mediocreColor="light";
   }
 
   mediocre() {
@@ -65,8 +62,7 @@ export class Tab1Page {
     this.clickToggle = true; 
     this.feeling = "mediocre";
 
-    this.groggyColor="secondary";
-    this.refreshedColor="secondary";
-
+    this.sleepyColor="light";
+    this.refreshedColor="light";
   }
 }
