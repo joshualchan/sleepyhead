@@ -15,26 +15,22 @@
           <br>
           groggy
         </ion-col>
-        <ion-col size="6" (click)="sleepy()">
-          <ion-icon src="/assets/frown-open-regular.svg" color={{sleepyColor}}></ion-icon>
-          <br>
-          sleepy
-        </ion-col>
-      </ion-row>
-      <br>
-      <ion-row>
         <ion-col size="6" (click)="refreshed()">
           <ion-icon src="/assets/laugh-beam-regular.svg" color={{refreshedColor}}></ion-icon>
           <br>
           refreshed
         </ion-col>
-        <ion-col size="6" (click)="mediocre()">
+      </ion-row>
+      <br>
+      <ion-row>
+        <ion-col (click)="mediocre()">
           <ion-icon src="/assets/meh-regular.svg"  color={{mediocreColor}} ></ion-icon>
           <br>
           mediocre
         </ion-col>
       </ion-row>
     </ion-grid>
+
   </ion-text>
 
   <ion-row>

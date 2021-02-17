@@ -12,20 +12,19 @@ export class Tab1Page {
     private router: Router
   ) {}
 
-  public groggyColor:string = "light"; 
-  public sleepyColor:string = "light"; 
-  public refreshedColor:string = "light";
-  public mediocreColor:string = "light";
+  public groggyColor:string = "secondary"; 
+  public sleepyColor:string = "secondary"; 
+  public refreshedColor:string = "secondary";
+  public mediocreColor:string = "secondary";
   private clickToggle:boolean = false; //true if one feeing already clicked
 
   private feeling:string = ""; // switch to enum? that might be hard to send to db ? 
   
 
    confirmButton() {
-    this.groggyColor="light";
-    this.sleepyColor="light";
-    this.refreshedColor="light";
-    this.mediocreColor="light";
+    this.groggyColor="secondary";
+    this.refreshedColor="secondary";
+    this.mediocreColor="secondary";
     if (this.clickToggle) { // if feeling has been clicked
       this.clickToggle = false; 
       this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
@@ -36,34 +35,32 @@ export class Tab1Page {
 
   // functions for clicking feelings icons 
   groggy() {
-    if (!this.clickToggle){
-       this.groggyColor="success";
-       this.clickToggle = true; 
-       this.feeling = "groggy";
-    }
-  }
+    this.groggyColor="success";
+    this.clickToggle = true; 
+    this.feeling = "groggy";
 
-  sleepy() {
-    if (!this.clickToggle){
-      this.sleepyColor="success";
-      this.clickToggle = true; 
-      this.feeling = "sleepy";
-   }
+    this.refreshedColor="secondary";
+    this.mediocreColor="secondary";
+
   }
 
   refreshed() {
-    if (!this.clickToggle){
-      this.refreshedColor="success";
-      this.clickToggle = true; 
-      this.feeling = "refreshed";
-   }
+    this.refreshedColor="success";
+    this.clickToggle = true; 
+    this.feeling = "refreshed";
+
+    this.groggyColor="secondary";
+    this.mediocreColor="secondary";
+    
   }
 
   mediocre() {
-    if (!this.clickToggle){
-      this.mediocreColor="success";
-      this.clickToggle = true; 
-      this.feeling = "mediocre";
-   }
+    this.mediocreColor="success";
+    this.clickToggle = true; 
+    this.feeling = "mediocre";
+
+    this.groggyColor="secondary";
+    this.refreshedColor="secondary";
+
   }
  }
