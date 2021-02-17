@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { DatabaseService } from '../services/database.service';
+
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
@@ -9,8 +11,10 @@ import { Router } from '@angular/router';
 export class Tab2Page {
 
   constructor(
-    private router: Router
-  ) {}  
+    private router: Router,
+    private databaseService: DatabaseService
+  ) {}
+
   public todaysBedtime:string = "12:00 am"; //default value
   public tomsWaketime:string = "8:00 am"; //default value
 
@@ -29,7 +33,6 @@ export class Tab2Page {
 
 
   // BUTTON FUNCTIONS ====================================================
-
   /**updates either sleep or wake time (calls below functions) */
   sleepButton():void {
     this.text=='Sleep' ? this.sleep() : this.wakeUp();
@@ -44,13 +47,12 @@ export class Tab2Page {
   };
 
   /** returns [sleep time as Date object, wake time as a Date object, total sleep time in minutes, rounded to nearest whole number]
-     updates button text */ 
-  wakeUp():[Date, Date, number] {
+      updates button text */ 
+  wakeUp() {
     this.wakeTime = Date.now();
     this.text = "Sleep";
+    this.databaseService.updateWakeInfo(new Date(this.sleepTime), new Date(this.wakeTime), Math.floor((this.wakeTime-this.sleepTime)/1000/60));
     this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true});
-    return [new Date(this.sleepTime), new Date(this.wakeTime), Math.floor((this.wakeTime-this.sleepTime)/1000/60)]; 
-    // change above line to update db instead of returning the value
   };
 
 }

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Data, Router } from '@angular/router';
+
+import { AuthenticationService } from '../services/authentication.service';
+import { DatabaseService } from '../services/database.service';
 
 @Component({
   selector: 'app-tab1',
@@ -9,7 +12,9 @@ import { Router } from '@angular/router';
 export class Tab1Page {
 
   constructor(
-    private router: Router
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private databaseService: DatabaseService
   ) {}
 
   public groggyColor:string = "secondary"; 
@@ -19,7 +24,6 @@ export class Tab1Page {
   private clickToggle:boolean = false; //true if one feeing already clicked
 
   private feeling:string = ""; // switch to enum? that might be hard to send to db ? 
-  
 
    confirmButton() {
     this.groggyColor="secondary";
@@ -27,9 +31,11 @@ export class Tab1Page {
     this.mediocreColor="secondary";
     if (this.clickToggle) { // if feeling has been clicked
       this.clickToggle = false; 
-      this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
-      return this.feeling; // switch to add feeling to db 
-      
+      this.databaseService.updateFeeling(this.feeling);
+      this.authenticationService.user$.subscribe(async (user) => {
+        this.databaseService.logToday(user.uid);
+        this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
+      });
     }
   }
 
@@ -63,4 +69,4 @@ export class Tab1Page {
     this.refreshedColor="secondary";
 
   }
- }
+}
