@@ -15,20 +15,22 @@ export class Tab3Page {
   ) {
     //this.databaseService.getAge("UEZuYf4qFXUrybJhFZxnDAhjZyB2").then(data => console.log(data));
 
-    
+    this.age =0;
     this.authenticationService.user$.subscribe(async (user) => {
-      this.age = this.databaseService.getAge(user.uid).then(value => {console.log(value);return value;});
-      console.log(this.age);
+      this.databaseService.getUser(user.uid).then(value => {
+        console.log(value.age);
+        this.age = value.age;
+      });
     });
     
     console.log(this.age);
   }
-
+  /*
   returnAge() {
     this.authenticationService.user$.subscribe(async (user) => {
-      console.log(this.databaseService.getAge(user.uid));
+      console.log(this.databaseService.getUser(user.uid).age);
     });
 
-  }
+  }*/
 
 }
