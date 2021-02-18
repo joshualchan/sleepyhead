@@ -1,72 +1,61 @@
-<ion-content [fullscreen]="true">
-  <div *ngIf="authenticationService.user$ | async as user else elseBlock">
-    <h1>
-      Profile
-    </h1>
+<!-- profile page -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center" size="large">sleepyhead</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="authenticationService.user$ | async as user" class="outer">
     <h2>
       About You
     </h2>
     <hr>
+    <span class="right-margin">
+      <h5>Name</h5>
+        <div class = "about-you-labels">
+          <h3>{{user.displayName}}</h3>
+        </div>
+    </span>
+    <span>
+      <h5>Age</h5>
+        <div class = "about-you-labels">
+          <h3>{{returnAge()}}</h3>
+        </div>
+    </span>
+      
     
-    <div *ngIf="authenticationService.user$ | async as user">
-      <span style ="margin-right: 25px; margin-left: 10%">
-        <h5>Name</h5>
-          <div class = "about-you-labels">
-            <h3>{{user.displayName}}</h3>
-          </div>
-        </span>
-  
-      <span style="margin-left: 25px;">
-        <h5>Age</h5>
-          <div class = "about-you-labels">
-            <h3>{{returnAge()}}</h3>
-          </div>
-        </span>
-    </div>
-    
-   
     <h2>
       Daily Goals
     </h2>
     <hr>
-    <div>
-      <span style ="margin-right: 25px; margin-left: 10%">
-        <h5>Hours sleep</h5>
-        <div class = "about-you-labels">
-          <h3>{{returnGoal()}}</h3>
-        </div>
-      </span>
-  
-      <span style="margin-left: 25px;">
-        <h5>Notify me</h5>
-        <div class = "about-you-labels">
-          <h3>30</h3>
-        </div>
-        <h5>mins before my bedtime</h5>
-      </span>
+    <span class="right-margin">
+      <h5>Hours of Sleep</h5>
+      <div class = "about-you-labels">
+        <h3>{{returnGoal()}}</h3>
+      </div>
+    </span>
+    <span>
+      <h5>Notifications</h5>
+      <div class = "about-you-labels">
+        <h3>30</h3>
+      </div>
+      <h5 class="ion-text-center">minutes before bedtime</h5>
+    </span>
 
-    </div>
+
     <h2>
       Tomorrow's Events
     </h2>
     <hr>
-    <!--<img src="{{ user.photoURL }}" width="50px">-->
-    <!-- TODO: logout -->
-    <!-- <ion-button (click)="authenticationService.logout()" class="button">Logout</ion-button> -->
-    
-
-    <div class="center">
-      <ion-button (click)="authenticationService.getCalendar()" class="button is-success">Get Google Calendar</ion-button>
-    </div>
-  
     <div *ngFor="let item of authenticationService.calendarItems">
-      <div class="events">
-        <h4 style="text-align:center">{{ item.summary }}</h4>
-        <h4 style="text-align:center">{{ item.start.dateTime }}</h4>
-      </div>
-    
+      <ion-card class="ion-text-center">
+        <h5>{{item.summary}}</h5>
+        <h5>{{translateDateTime(item.start.dateTime)}}</h5>
+      </ion-card>
     </div>
-    
-
+    <div class="ion-text-center">
+      <ion-button (click)="authenticationService.getCalendar()" class="button is-success">Display Google Calendar Events</ion-button>
+    </div>
   </div>
 </ion-content>
