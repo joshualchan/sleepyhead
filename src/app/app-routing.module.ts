@@ -23,7 +23,11 @@ const routes: Routes = [
   {
     path: 'setup',
     loadChildren: () => import('./setup/setup.module').then( m => m.SetupPageModule)
+  },  {
+    path: 'tab4',
+    loadChildren: () => import('./tab4/tab4.module').then( m => m.Tab4PageModule)
   }
+
 ];
 @NgModule({
   imports: [
