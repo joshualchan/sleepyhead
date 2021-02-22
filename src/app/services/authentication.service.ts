@@ -24,6 +24,7 @@ export class AuthenticationService {
     this.initClient();
     this.user$ = afAuth.authState;
     // this.loadAuthStatus();
+    this.getCalendar()
   }
 
   // Initialize the Google API client with desired scopes
@@ -64,6 +65,7 @@ export class AuthenticationService {
       from(Storage.set({ key: AUTH_KEY, value: 'true'}));
       // this.isAuthenticated.next(true);
       console.log("auth login user:", signedInUser.user);
+      this.getCalendar();
       return signedInUser.user;
     } else {
       console.log('Google Auth failed');

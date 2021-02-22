@@ -23,8 +23,17 @@ export class Tab3Page {
         this.goal = value.goal;
       })
     });
+
   }
-  
+  doRefresh(event) {
+    console.log('Begin async operation');
+    this.authenticationService.getCalendar()
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
+
   returnAge() {
     return this.age;
   }
