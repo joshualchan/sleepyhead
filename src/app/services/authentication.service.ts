@@ -24,7 +24,6 @@ export class AuthenticationService {
     this.initClient();
     this.user$ = afAuth.authState;
     // this.loadAuthStatus();
-    this.getCalendar()
   }
 
   // Initialize the Google API client with desired scopes

@@ -21,13 +21,14 @@ export class Tab3Page {
       this.databaseService.getUser(currentUser.uid).then(value => {
         this.age = value.age;
         this.goal = value.goal;
-      })
+      });
+      this.authenticationService.getCalendar();
     });
-
   }
+  
   doRefresh(event) {
     console.log('Begin async operation');
-    this.authenticationService.getCalendar()
+    this.authenticationService.getCalendar();
     setTimeout(() => {
       console.log('Async operation has ended');
       event.target.complete();
