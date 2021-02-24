@@ -42,7 +42,7 @@ export class DatabaseService {
     this.sleepTime = sleepTime;
     this.wakeTime = wakeTime;
     this.minSlept = minSlept;
-    this.day = (wakeTime.getMonth() + 1) + "/" + wakeTime.getDate() + "/" + wakeTime.getFullYear(); 
+    this.day = (wakeTime.getMonth() + 1) + "-" + wakeTime.getDate() + "-" + wakeTime.getFullYear(); 
   }
 
   updateFeeling(feeling) {
@@ -51,9 +51,7 @@ export class DatabaseService {
 
   logToday(userid) {
     this.db.collection("users").doc(userid).update({
-      days: {
-        [this.day]: [this.sleepTime, this.wakeTime, this.minSlept, this.feeling]
-      }
+      ["days."+this.day]: [this.sleepTime, this.wakeTime, this.minSlept, this.feeling]
     }).catch((error) => {
       console.error("Error logging today:", error);
     });
