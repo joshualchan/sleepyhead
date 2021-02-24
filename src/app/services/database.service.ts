@@ -28,10 +28,11 @@ export class DatabaseService {
     }
   }
 
-  createUser(userid, age, goal) {
+  createUser(userid, age, goal, wakeGoal) {
     this.db.collection("users").doc(userid).set({
       age: age,
       goal: goal,
+      wakeGoal: wakeGoal,
       days: {}
     }).catch((error) => {
       console.error("Error creating user:", error);
@@ -58,27 +59,4 @@ export class DatabaseService {
       console.error("Error logging today:", error);
     });
   }
-
-  // these functions have not been tested
-  // getAge(userid) {
-  //   return this.db.collection("users").doc(userid).get().then((doc) => {
-  //     if (doc.exists) {
-  //       return doc.data().age;
-  //     } else {
-  //       console.log("Can not get age");
-  //       return -1;
-  //     }
-  //   });
-  // }
-
-  // getGoal(userid) {
-  //   return this.db.collection("users").doc(userid).get().then((doc) => {
-  //     if (doc.exists) {
-  //       return doc.data().goal;
-  //     } else {
-  //       console.log("Can not get goal");
-  //       return -1;
-  //     }
-  //   });
-  // }
 }

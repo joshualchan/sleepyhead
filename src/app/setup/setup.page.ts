@@ -23,7 +23,8 @@ export class SetupPage implements OnInit {
   ) { 
     this.setUpForm = formBuilder.group({
       age: ['', [Validators.required, Validators.pattern("^[1-9][0-9]*$")]],
-      goal: ['', [Validators.required, Validators.min(0), Validators.max(23)]]
+      goal: ['', [Validators.required, Validators.min(0), Validators.max(23)]],
+      wakeGoal: ['', Validators.required]
     });
   }
 
@@ -36,7 +37,11 @@ export class SetupPage implements OnInit {
     await loading.present();
 
     this.authenticationService.user$.subscribe(async (user) => {
-      this.databaseService.createUser(user.uid, this.setUpForm.get('age').value, this.setUpForm.get('goal').value);
+      this.databaseService.createUser(
+        user.uid, this.setUpForm.get('age').value, 
+        this.setUpForm.get('goal').value, 
+        new Date(this.setUpForm.get('wakeGoal').value)
+      );
       await loading.dismiss();
       this.router.navigateByUrl('/tabs', { replaceUrl: true});
     });

@@ -22,6 +22,11 @@
       <ion-label position="stacked" color="tertiary">Desired hours of sleep per night</ion-label>
       <ion-input formControlName="goal" type="number" color="tertiary"></ion-input>
     </ion-item>
+
+    <ion-item lines="none">
+      <ion-label position="stacked" color="tertiary">Desired time to wake up no later than</ion-label>
+      <ion-datetime formControlName="wakeGoal" displayFormat="h-mm-a"></ion-datetime>
+    </ion-item>
  
     <ion-button expand="block" type="submit" [disabled]="!setUpForm.valid">Confirm</ion-button>
   </form>
