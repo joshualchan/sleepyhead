@@ -15,10 +15,10 @@
     </ion-item>
 
     <ion-list color="transparent">
-      <ion-card>
-        <div class="ion-text-center" color="tertiary">
-          <h2><span class="textLabel">sleep:  </span>12:00am</h2>
-          <h2><span class="textLabel">wake:  </span>8:00am</h2>
+      <ion-card *ngFor="let time of times.max; let i=index" [color]=time.color>
+        <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'max')">
+          <h2><span class="textLabel">sleep:  </span>{{time.sleep}}</h2>
+          <h2><span class="textLabel">wake:  </span>{{time.wake}}</h2>
         </div>
       </ion-card>
     </ion-list>
