@@ -19,7 +19,7 @@ export class DatabaseService {
   }
 
   async getUser(userid) {
-    const doc = await this.db.collection("users").doc(userid).get();
+    const doc = await this.db.collection(userid).doc("basicInfo").get();
     if (doc.exists) {
       return doc.data();
     } else {
@@ -28,12 +28,16 @@ export class DatabaseService {
     }
   }
 
-  createUser(userid, age, goal, wakeGoal) {
-    this.db.collection("users").doc(userid).set({
+  createUser(userid, age, ageGroup, goal, wakeGoal) {
+    this.db.collection(userid).doc("basicInfo").set({
       age: age,
+      ageGroup: ageGroup,
       goal: goal,
       wakeGoal: wakeGoal,
-      days: {}
+    }).catch((error) => {
+      console.error("Error creating user:", error);
+    });
+    this.db.collection(userid).doc("sleepSchedule").set({ 
     }).catch((error) => {
       console.error("Error creating user:", error);
     });
@@ -51,10 +55,37 @@ export class DatabaseService {
   }
 
   logToday(userid) {
-    this.db.collection("users").doc(userid).update({
-      ["days."+this.day]: [this.sleepTime, this.wakeTime, this.minSlept, this.feeling]
+    this.db.collection(userid).doc("sleepSchedule").update({
+      [this.day]: [this.sleepTime, this.wakeTime, this.minSlept, this.feeling]
     }).catch((error) => {
       console.error("Error logging today:", error);
     });
+  }
+
+  async getRecentDays(userid) {
+    const days = await this.db.collection(userid).doc("sleepSchedule")
+                        .where()
+                        .get();
+    if (days.exists) {
+      return days.data();
+    } else {
+      console.log("user has no sleep schedule logged");
+      return Promise.reject();
+    }
+    }).catch((error) => {
+      console.error("Error logging today:", error);
+    });
+  }
+
+  async getRecentDays(userid) {
+    const days = await this.db.collection(userid).doc("sleepSchedule")
+                        .where()
+                        .get();
+    if (days.exists) {
+      return days.data();
+    } else {
+      console.log("user has no sleep schedule logged");
+      return Promise.reject();
+    }
   }
 }
