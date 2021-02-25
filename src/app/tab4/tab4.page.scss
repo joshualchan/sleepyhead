@@ -1,19 +1,17 @@
-ion-label {
-    --border-color: var(--ion-color-tertiary);
-}
+ion-content {
+    div.outer {
+        margin-left: 10%;
+        margin-right: 10%;
+        color: var(--ion-color-tertiary);
 
-ion-list {
-    --ion-background-color: transparent !important;
-}
+        hr { 
+            border: 1px solid var(--ion-color-tertiary);
+        }
 
-.textLabel {
-    font-size:medium 
-}
-
-ion-card{
-    margin: 12px; 
-    margin-left: 20px;
-    margin-right: 20px; 
+        .textLabel {
+            font-size: medium;
+        }
+    }
 }
 
 // ion-label {
