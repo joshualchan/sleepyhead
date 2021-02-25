@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { min } from 'rxjs/operators';
 
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
@@ -72,6 +73,8 @@ export class RecommenderService {
   //
   
   getMaxTimes() {
+    var times = [];
+
     //need to get calendar events for the next day
     var latestWakeTime: Date;
     var sleepTime1: Date;
@@ -85,25 +88,45 @@ export class RecommenderService {
       latestWakeTime.setHours(firstEvent.getHours() - 1);
     }
     
-    sleepTime = 
-    //var times = [];
-    
-    // end is low or high
-    function getSleepTime(end:string) {
-      var goalWeight = this.goal > this.recommended[this.ageGroup].end ? 0.75: 0.25; 
-      var recWeight = this.recommended[this.ageGroup].end > this.goal ? 0.75: 0.25;  
+    //sleepTime = latestWakeTime - recommended[ageGroup][high]
+    sleepTime1 = latestWakeTime;
+    sleepTime1.setHours(latestWakeTime.getHours() - this.recommended[this.ageGroup]['high']);
+    times.push({'sleep': sleepTime1, 'wake': latestWakeTime});
+
+    //returns array: [sleepHours, sleepMins]
+    function getSleepAmount(end:string) {
+      var goalWeight = this.goal > this.recommended[this.ageGroup][end] ? 0.75: 0.25; 
+      var sleepHours = goalWeight * this.goal + (1-goalWeight) * this.recommended[this.ageGroup][end];
+      var sleepTimeConverted = this.getDecToTime(sleepHours);
+      return sleepTimeConverted;
       //return latestWakeTime - (goalWeight*this.goal + recWeight*this.recommended[this.ageGroup].end)
     }
 
     // low end rec
-    //var sleepTime = getSleepTime('low'); 
-    
-    //high end rec
-    //var sleepTime = getSleepTime('high'); 
-    
-    //return list of dictionaries
+    sleepTime2 = latestWakeTime;
+    var sleepAmount2 = getSleepAmount('low'); 
+    sleepTime2.setHours(latestWakeTime.getHours()-sleepAmount2[0]);
+    sleepTime2.setMinutes(latestWakeTime.getMinutes()-sleepAmount2[1]);
+    times.push({'sleep': sleepTime2, 'wake': latestWakeTime});
+
+    sleepTime3 = latestWakeTime;
+    var sleepAmount3 = getSleepAmount('low'); 
+    sleepTime3.setHours(latestWakeTime.getHours()-sleepAmount3[0]);
+    sleepTime3.setMinutes(latestWakeTime.getMinutes()-sleepAmount3[1]);
+    times.push({'sleep': sleepTime3, 'wake': latestWakeTime});
+
+    console.log(times);
+    return times;
   }
 
+  getDecToTime(hours: number) {
+    //example: 9.25 hrs converts to 9 hrs 15 min, NOT 25 min
+    var sleepHours = Math.floor(hours);
+    hours -= Math.floor(hours);
+    var sleepMins = 60 * hours;
+    return [sleepHours, sleepMins];
+  }
+  
   getConsistentTimes() {
 
   }
