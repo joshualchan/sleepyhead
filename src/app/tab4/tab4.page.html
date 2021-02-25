@@ -1,9 +1,60 @@
+<!--recommendation options-->
 <ion-header>
-  <ion-toolbar>
-    <ion-title>tab4</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center" size="large">sleepyhead</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <!--SECTION 1 -->
+    <ion-item color="transparent" lines="inset">
+      <ion-label>
+        <ion-text div color="tertiary"><h2>to maximize sleep:</h2></ion-text>
+      </ion-label>
+      <hr>
+    </ion-item>
 
-</ion-content>
+    <ion-list color="transparent">
+      <ion-card *ngFor="let time of times.max; let i=index" [color]=time.color>
+        <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'max')">
+          <h2><span class="textLabel">sleep:  </span>{{time.sleep}}</h2>
+          <h2><span class="textLabel">wake:  </span>{{time.wake}}</h2>
+        </div>
+      </ion-card>
+    </ion-list>
+
+        <!--SECTION 2 -->
+        <ion-item color="transparent" lines="inset">
+          <ion-label>
+            <ion-text div color="tertiary"><h2>to maintain a consistent schedule:</h2></ion-text>
+          </ion-label>
+          <hr>
+        </ion-item>
+    
+        <ion-list color="transparent">
+          <ion-card *ngFor="let time of times.consistent; let i=index" [color]=time.color>
+            <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'consistent')">
+              <h2><span class="textLabel">sleep:  </span>{{time.sleep}}</h2>
+              <h2><span class="textLabel">wake:  </span>{{time.wake}}</h2>
+            </div>
+          </ion-card>
+        </ion-list>
+    
+        <!--SECTION 3 -->
+        <ion-item color="transparent" lines="inset">
+          <ion-label>
+            <ion-text div color="tertiary"><h2>best overall:</h2></ion-text>
+          </ion-label>
+          <hr>
+        </ion-item>
+    
+        <ion-list color="transparent">
+          <ion-card *ngFor="let time of times.overall; let i=index" [color]=time.color>
+            <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'overall')">
+              <h2><span class="textLabel">sleep:  </span>{{time.sleep}}</h2>
+              <h2><span class="textLabel">wake:  </span>{{time.wake}}</h2>
+            </div>
+          </ion-card>
+        </ion-list>
+
+  </ion-content>

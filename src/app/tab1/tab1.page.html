@@ -34,7 +34,7 @@
 
   <ion-row>
     <ion-col class="ion-text-center">
-      <ion-button shape="round" (click)="confirmButton()">confirm</ion-button>
+      <ion-button shape="round" (click)="confirmButton()" [disabled]="!clickToggle">confirm</ion-button>
     </ion-col>
   </ion-row>
 </ion-content>
