@@ -10,19 +10,15 @@ import { DatabaseService } from '../services/database.service';
 })
 
 export class Tab3Page {
-  age;
-  goal;
 
   constructor(
     private authenticationService: AuthenticationService,
     private databaseService: DatabaseService
   ) {
     this.authenticationService.user$.subscribe((currentUser) => {
-      this.databaseService.getUser(currentUser.uid).then(value => {
-        this.age = value.age;
-        this.goal = value.goal;
-      });
-      this.authenticationService.getCalendar();
+      if (currentUser && currentUser.uid) {
+        this.authenticationService.getCalendar();
+      }
     });
   }
   
@@ -33,14 +29,6 @@ export class Tab3Page {
       console.log('Async operation has ended');
       event.target.complete();
     }, 2000);
-  }
-
-  returnAge() {
-    return this.age;
-  }
-
-  returnGoal() {
-    return this.goal;
   }
 
   translateDateTime(dateTime) {

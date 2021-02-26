@@ -24,7 +24,7 @@
     <span>
       <h5>Age</h5>
         <div class = "about-you-labels">
-          <h3>{{returnAge()}}</h3>
+          <h3 *ngIf="databaseService.userDoc">{{databaseService.userDoc.age}}</h3>
         </div>
     </span>
       
@@ -36,7 +36,7 @@
     <span class="right-margin">
       <h5>Hours of Sleep</h5>
       <div class = "about-you-labels">
-        <h3>{{returnGoal()}}</h3>
+        <h3 *ngIf="databaseService.userDoc">{{databaseService.userDoc.goal}}</h3>
       </div>
     </span>
     <span>

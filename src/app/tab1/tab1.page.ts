@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Data, Router } from '@angular/router';
 
-import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
 
 @Component({
@@ -13,7 +12,6 @@ export class Tab1Page {
 
   constructor(
     private router: Router,
-    private authenticationService: AuthenticationService,
     private databaseService: DatabaseService
   ) {}
 
@@ -31,10 +29,8 @@ export class Tab1Page {
     if (this.clickToggle) { // if feeling has been clicked
       this.clickToggle = false; 
       this.databaseService.updateFeeling(this.feeling);
-      this.authenticationService.user$.subscribe(async (user) => {
-        this.databaseService.logToday(user.uid);
-        this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
-      });
+      this.databaseService.logToday();
+      this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
     }
   }
 
