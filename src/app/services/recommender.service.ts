@@ -85,7 +85,6 @@ export class RecommenderService {
       latestWakeTime.setHours(firstEvent.getHours() - 1);
     }
     
-    sleepTime = 
     //var times = [];
     
     // end is low or high
@@ -126,15 +125,6 @@ export class RecommenderService {
     var avgWake = wakeSum/10; // change format/type conversion as needed
     var avgSleep = sleepSum/10;
     overallTimes.push({'sleep':avgSleep.toString, 'wake':avgWake.toString()})
-    
-
-    //avg of earliest wake times in each category + corresponding avg sleep times
-    for (var key in this.times) {
-      this.times[key].sort( (a, b) => {
-        return a.wake - b.wake; 
-      });
-    }
-    
 
     function getAvg() { 
       var SleepSum = 0; 
@@ -146,12 +136,23 @@ export class RecommenderService {
         overallTimes.push({'sleep':sleepSum/3, 'wake':wakeSum/3}); 
     }
     
+
+    //avg of earliest wake times in each category + corresponding avg sleep times
+    for (var key in this.times) {
+      this.times[key].sort( (a, b) => {
+        return a.wake - b.wake; 
+      });
+    }
+    getAvg(); 
+    
+    
     // avg of latest wake tiems from each category
     for (var key in this.times) {
       this.times[key].sort( (a, b) => {
         return b.wake - a.wake; 
       });
     }
+    getAvg(); 
     
     // avg of earliest sleep times from each category
     for (var key in this.times) {
@@ -159,6 +160,7 @@ export class RecommenderService {
         return a.sleep - b.sleep; 
       });
     }
+    getAvg(); 
   }
 }
 
