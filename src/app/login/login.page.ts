@@ -29,7 +29,8 @@ export class LoginPage implements OnInit {
     await loading.present();
 
     this.authenticationService.login().then(async (user) => {  
-      this.databaseService.getUser(user.uid).then(async (userDoc) => {
+      this.databaseService.setUser(user.uid);
+      this.databaseService.getUser().then(async () => {
         await loading.dismiss();
         this.router.navigateByUrl('/tabs', { replaceUrl: true});
       }).catch(async () => {

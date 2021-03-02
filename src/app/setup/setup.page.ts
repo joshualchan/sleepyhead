@@ -51,17 +51,13 @@ export class SetupPage implements OnInit {
     // lock and show spinner while loading
     const loading = await this.loadingController.create();
     await loading.present();
-
-    this.authenticationService.user$.subscribe(async (user) => {
-      this.databaseService.createUser(
-        user.uid,
-        this.setUpForm.get('age').value,
-        this.getAgeGroup(this.setUpForm.get('age').value), 
-        this.setUpForm.get('goal').value, 
-        new Date(this.setUpForm.get('wakeGoal').value)
-      );
-      await loading.dismiss();
-      this.router.navigateByUrl('/tabs', { replaceUrl: true});
-    });
+    this.databaseService.createUser(
+      this.setUpForm.get('age').value,
+      this.getAgeGroup(this.setUpForm.get('age').value), 
+      this.setUpForm.get('goal').value, 
+      new Date(this.setUpForm.get('wakeGoal').value)
+    );
+    await loading.dismiss();
+    this.router.navigateByUrl('/tabs', { replaceUrl: true});
   }
 }
