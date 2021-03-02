@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { min } from 'rxjs/operators';
 
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
@@ -8,11 +7,11 @@ import { DatabaseService } from '../services/database.service';
   providedIn: 'root'
 })
 export class RecommenderService {
-  ageGroup: string;
   goal: number; 
   wakeGoal;
+  todaysWakeGoal;
   recentDays;
-  // Sleep Foundation recommended hours of sleep per age
+  // Sleep Foundation sleep hour recommendations
   recommended = {
     'preschooler':{'low':10, 'high':13}, 
     'child':{'low':9, 'high':11}, 
@@ -47,32 +46,27 @@ export class RecommenderService {
     private databaseService: DatabaseService
   ) {
     this.authenticationService.user$.subscribe((currentUser) => {
-      this.databaseService.getUser(currentUser.uid).then(value => {
-        this.ageGroup = value.ageGroup; 
-        this.goal = value.goal;
+      const goal = this.databaseService.userDoc.goal;
+      const wakeGoal = this.databaseService.userDoc.wakeGoal;
 
-        // get dateTime for wakeGoal
-        var wakeTime = value.wakeGoal;
-
-        this.wakeGoal = new Date();
-        if (this.wakeGoal.toLocaleTimeString.substr(this.wakeGoal.toLocaleTimeString.length-2) == "PM") { //set to tomorrow
-          this.wakeGoal.setDate(this.wakeGoal.getDate() + 1);
+      if (currentUser && currentUser.uid) {
+        this.todaysWakeGoal = new Date(); // DISC: better to use today in db service? move today here?
+        if (this.todaysWakeGoal.getHours() >= 12) { // set to tomorrow if PM
+          this.todaysWakeGoal.setDate(this.todaysWakeGoal.getDate() + 1);
         }
-        this.wakeGoal.setHours(wakeTime.getHours());
-        this.wakeGoal.setHours(wakeTime.getMinutes());
-    
-      });
+        this.todaysWakeGoal.setHours(wakeGoal.getHours());
+        this.todaysWakeGoal.setHours(wakeGoal.getMinutes());
+      }
     });
-    //this.wakeGoal = this.wake;
-    
+    //this.todaysWakeGoal = this.wake;
     console.log(this.authenticationService.calendarItems); //datetimes
   }
   //access earliest calendar event using this.authencationService.calendarItems()
 
-
-  //
-  
+  // DISC: setting sleep based on wake issues
   getMaxTimes() {
+    const ageGroup = this.databaseService.userDoc.ageGroup;
+
     var times = [];
 
     //need to get calendar events for the next day
@@ -82,24 +76,24 @@ export class RecommenderService {
     var sleepTime3: Date;
 
     //calculate wake time
-    latestWakeTime = this.wakeGoal;
-    if (this.authenticationService.calendarItems.length > 0 && this.authenticationService.calendarItems[0].startTime < this.wakeGoal) {
+    latestWakeTime = this.todaysWakeGoal;
+    if (this.authenticationService.calendarItems.length > 0 && this.authenticationService.calendarItems[0].startTime < this.todaysWakeGoal) { // -1 here?
       var firstEvent = this.authenticationService.calendarItems[0].startTime;      
       latestWakeTime.setHours(firstEvent.getHours() - 1);
     }
     
-    //sleepTime = latestWakeTime - recommended[ageGroup][high]
+    //sleepTime = latestWakeTime - recommended[ageGroup][high] // should be checking no more than XX hours above max(goal, rec)
     sleepTime1 = latestWakeTime;
-    sleepTime1.setHours(latestWakeTime.getHours() - this.recommended[this.ageGroup]['high']);
+    sleepTime1.setHours(latestWakeTime.getHours() - this.recommended[ageGroup]['high']);
     times.push({'sleep': sleepTime1, 'wake': latestWakeTime});
 
     //returns array: [sleepHours, sleepMins]
     function getSleepAmount(end:string) {
-      var goalWeight = this.goal > this.recommended[this.ageGroup][end] ? 0.75: 0.25; 
-      var sleepHours = goalWeight * this.goal + (1-goalWeight) * this.recommended[this.ageGroup][end];
+      var goalWeight = this.goal > this.recommended[ageGroup][end] ? 0.75: 0.25; 
+      var sleepHours = goalWeight * this.goal + (1-goalWeight) * this.recommended[ageGroup][end];
       var sleepTimeConverted = this.getDecToTime(sleepHours);
       return sleepTimeConverted;
-      //return latestWakeTime - (goalWeight*this.goal + recWeight*this.recommended[this.ageGroup].end)
+      //return latestWakeTime - (goalWeight*this.goal + recWeight*this.recommended[ageGroup].end)
     }
 
     // low end rec
@@ -109,6 +103,7 @@ export class RecommenderService {
     sleepTime2.setMinutes(latestWakeTime.getMinutes()-sleepAmount2[1]);
     times.push({'sleep': sleepTime2, 'wake': latestWakeTime});
 
+    // high end rec
     sleepTime3 = latestWakeTime;
     var sleepAmount3 = getSleepAmount('low'); 
     sleepTime3.setHours(latestWakeTime.getHours()-sleepAmount3[0]);
@@ -146,7 +141,7 @@ export class RecommenderService {
       });  
     }
 
-    var avgWake = wakeSum/10; // change format/type conversion as needed
+    var avgWake = wakeSum/10; // change format/type conversion as needed // 10 or 6?
     var avgSleep = sleepSum/10;
     overallTimes.push({'sleep':avgSleep.toString, 'wake':avgWake.toString()})
 
