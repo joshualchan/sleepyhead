@@ -73,7 +73,8 @@ export class DatabaseService {
   }
 
   logToday() {
-    this.db.collection("users").doc(this.uid).collection("sleepSchedule").doc(this.today.getTime().toString()).set({
+    const todayString = this.today.getMonth() + "-" + this.today.getDate() + "-" + this.today.getFullYear();
+    this.db.collection("users").doc(this.uid).collection("sleepSchedule").doc(todayString).set({
       today: this.today.getTime(),
       sleepTime: this.sleepTime,
       wakeTime: this.wakeTime,
@@ -89,7 +90,7 @@ export class DatabaseService {
     dateThreshold.setDate(dateThreshold.getDate() - numDays);
     console.log("dateThreshold is ", dateThreshold.getTime());
     const days = await this.db.collection("users").doc(this.uid).collection("sleepSchedule")
-                        .where("today", ">", dateThreshold.getTime()).get(); 
+                              .where("today", ">", dateThreshold.getTime()).get();
     if (days.docs.length > 0) {
       return days.docs;
     } else {
