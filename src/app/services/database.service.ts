@@ -89,8 +89,8 @@ export class DatabaseService {
     const dateThreshold = new Date(this.today);
     dateThreshold.setDate(dateThreshold.getDate() - numDays);
     console.log("dateThreshold is ", dateThreshold.getTime());
-    const days = await this.db.collection("users").doc(this.uid).collection("sleepSchedule")
-                              .where("today", ">", dateThreshold.getTime()).get();
+    const days = await this.db.collection("users").doc(this.uid).collection("sleepSchedule").where("today", "<=", 1614240000002).get();
+                              //.where("today", ">", dateThreshold.getTime()).get();
     if (days.docs.length > 0) {
       return days.docs;
     } else {
