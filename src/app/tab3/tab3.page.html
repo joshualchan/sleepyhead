@@ -38,6 +38,10 @@
       <div class = "about-you-labels">
         <h3 *ngIf="databaseService.userDoc">{{databaseService.userDoc.goal}}</h3>
       </div>
+      <h5>Wake up before</h5>
+      <div class = "about-you-labels">
+        <h3 *ngIf="databaseService.userDoc">{{databaseService.userDoc.wakeGoal.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}}</h3>
+      </div>
     </span>
     <span>
       <h5>Notifications</h5>
@@ -46,6 +50,7 @@
       </div>
       <h5 class="ion-text-center">minutes before bedtime</h5>
     </span>
+    
 
 
     <h2>
