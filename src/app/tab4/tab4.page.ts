@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { RecommenderService } from '../services/recommender.service';
+
 @Component({
   selector: 'app-tab4',
   templateUrl: './tab4.page.html',
@@ -20,9 +22,21 @@ export class Tab4Page implements OnInit {
                 {'sleep':'12:09am', 'wake': '8:00am', 'chosen':false, 'color':'dark'}]
   }
 
-  constructor() { }
+  constructor(private recommenderService: RecommenderService) { }
 
   ngOnInit() {
+  }
+
+  getMaxTimes() {
+    this.recommenderService.getMaxTimes();
+  }
+
+  getConsistentTimes() {
+    this.recommenderService.getConsistentTimes();
+  }
+
+  getOverallTimes() {
+    this.recommenderService.getOverallTimes();
   }
 
   chooseTime(index:number, category:string) {

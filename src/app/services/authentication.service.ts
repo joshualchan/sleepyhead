@@ -92,7 +92,6 @@ export class AuthenticationService {
     var tomorrow = new Date();
     tomorrow.setDate(new Date().getDate()+1);
     this.calendarItems = events.result.items
-    var date = new Date(this.calendarItems[0].start.dateTime) // g: hi! doing merge stuff, do we ever use this?
     this.calendarItems = this.calendarItems.filter(event => new Date(event.start.dateTime) < tomorrow)
   }
 }

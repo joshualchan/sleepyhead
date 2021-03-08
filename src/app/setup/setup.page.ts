@@ -31,19 +31,33 @@ export class SetupPage implements OnInit {
   ngOnInit() {
   }
 
+  private getAgeGroup(age) {
+    if (age <= 5) {
+      return 'preschooler';
+    } else if (age <=13) {
+      return 'child';
+    } else if (age <= 17) {
+      return 'teenager'; 
+    } else if (age <= 25) {
+      return 'youngAdult'
+    } else if (age <= 64) {
+      return 'adult'; 
+    } else {
+      return 'senior'; 
+    }
+  }
+
   async setUp() {
     // lock and show spinner while loading
     const loading = await this.loadingController.create();
     await loading.present();
-
-    this.authenticationService.user$.subscribe(async (user) => {
-      this.databaseService.createUser(
-        user.uid, this.setUpForm.get('age').value, 
-        this.setUpForm.get('goal').value, 
-        new Date(this.setUpForm.get('wakeGoal').value)
-      );
-      await loading.dismiss();
-      this.router.navigateByUrl('/tabs', { replaceUrl: true});
-    });
+    this.databaseService.createUser(
+      this.setUpForm.get('age').value,
+      this.getAgeGroup(this.setUpForm.get('age').value), 
+      this.setUpForm.get('goal').value, 
+      new Date(this.setUpForm.get('wakeGoal').value)
+    );
+    await loading.dismiss();
+    this.router.navigateByUrl('/tabs', { replaceUrl: true});
   }
 }
