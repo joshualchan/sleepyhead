@@ -35,6 +35,10 @@ export class Tab4Page implements OnInit {
     this.recommenderService.getConsistentTimes();
   }
 
+  getOverallTimes() {
+    this.recommenderService.getOverallTimes();
+  }
+
   chooseTime(index:number, category:string) {
     console.log("clicked");
 
