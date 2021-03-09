@@ -25,19 +25,24 @@ export class Tab4Page implements OnInit {
   constructor(private recommenderService: RecommenderService) { }
 
   ngOnInit() {
+    this.recommenderService.getMaxTimes(); 
+    this.recommenderService.getConsistentTimes(); 
+    this.recommenderService.getOverallTimes(); 
+    this.times = this.recommenderService.times;
+    console.log(this.times);  
   }
 
-  getMaxTimes() {
-    this.recommenderService.getMaxTimes();
-  }
+  // getMaxTimes() {
+  //   this.recommenderService.getMaxTimes();
+  // }
 
-  getConsistentTimes() {
-    this.recommenderService.getConsistentTimes();
-  }
+  // getConsistentTimes() {
+  //   this.recommenderService.getConsistentTimes();
+  // }
 
-  getOverallTimes() {
-    this.recommenderService.getOverallTimes();
-  }
+  // getOverallTimes() {
+  //   this.recommenderService.getOverallTimes();
+  // }
 
   chooseTime(index:number, category:string) {
     console.log("clicked");
@@ -52,7 +57,7 @@ export class Tab4Page implements OnInit {
     this.times[category][index].chosen = true; 
     this.times[category][index].color = "success";
     
-    // return or save chosen time to db 
+  
   }
 
   // add confirm button so only one time gets updated to db?
