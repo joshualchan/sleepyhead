@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 import { RecommenderService } from '../services/recommender.service';
 
@@ -9,6 +10,7 @@ import { RecommenderService } from '../services/recommender.service';
 })
 export class Tab4Page implements OnInit {
 
+  chosenTime; 
   times = {
     'max': [{'sleep':'12:00am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
             {'sleep':'12:01am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
@@ -22,7 +24,7 @@ export class Tab4Page implements OnInit {
                 {'sleep':'12:09am', 'wake': '8:00am', 'chosen':false, 'color':'dark'}]
   }
 
-  constructor(private recommenderService: RecommenderService) { }
+  constructor(private recommenderService: RecommenderService, private modalController:ModalController) { }
 
   ngOnInit() {
     this.recommenderService.getMaxTimes(); 
@@ -32,17 +34,17 @@ export class Tab4Page implements OnInit {
     console.log(this.times);  
   }
 
-  // getMaxTimes() {
-  //   this.recommenderService.getMaxTimes();
-  // }
+  getMaxTimes() {
+    this.recommenderService.getMaxTimes();
+  }
 
-  // getConsistentTimes() {
-  //   this.recommenderService.getConsistentTimes();
-  // }
+  getConsistentTimes() {
+    this.recommenderService.getConsistentTimes();
+  }
 
-  // getOverallTimes() {
-  //   this.recommenderService.getOverallTimes();
-  // }
+  getOverallTimes() {
+    this.recommenderService.getOverallTimes();
+  }
 
   chooseTime(index:number, category:string) {
     console.log("clicked");
@@ -54,12 +56,19 @@ export class Tab4Page implements OnInit {
       });
     });
 
+    this.chosenTime = this.times[category][index]; 
     this.times[category][index].chosen = true; 
     this.times[category][index].color = "success";
     
-  
   }
 
-  // add confirm button so only one time gets updated to db?
+  dismiss() {
+    // pass back chosen value, if user has one chosen
+    //console.log(this.chosenTime); 
+    this.modalController.dismiss({
+      'dismissed': true,
+      'chosenTime': this.chosenTime
+    });
+  }
 
 }

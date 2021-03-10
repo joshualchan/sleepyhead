@@ -8,11 +8,14 @@
 <ion-content>
   <ion-text color="tertiary">
     <div class="ion-justify-content-center" id="homePgSection">
+      <!-- <ion-button shape="round" (click)="chooseTime()">Change</ion-button> -->
       <p class="text ion-no-margin">today's bedtime:</p>
       <p class="time ion-no-margin">{{todaysBedtime}}</p>
       <br>
       <p class="text ion-no-margin">tomorrow's wake time:</p>
       <p class="time ion-no-margin">{{tomsWaketime}}</p> 
+      <ion-item detail="false" lines="none" button (click)="chooseTime()"> <u slot="start">Change Time</u> </ion-item>
+
     </div>
   </ion-text>
 

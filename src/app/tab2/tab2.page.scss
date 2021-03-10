@@ -1,5 +1,10 @@
 ion-content {
     #homePgSection {
+        ion-item {
+            --background: none; 
+            --color: var(--ion-color-tertiary);
+        }
+
         margin-top: 100px;
         margin-bottom: 60px;
         margin-left: auto;

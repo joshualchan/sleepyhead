@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Data, Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 import { DatabaseService } from '../services/database.service';
 
@@ -12,7 +13,8 @@ export class Tab1Page {
 
   constructor(
     private router: Router,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private modalController: ModalController
   ) {}
 
   public sleepyColor:string = "light"; 
@@ -30,7 +32,8 @@ export class Tab1Page {
       this.clickToggle = false; 
       this.databaseService.updateFeeling(this.feeling);
       this.databaseService.logToday();
-      this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
+      this.dismiss(); 
+      //this.router.navigateByUrl('/tabs/tab2', { replaceUrl: true});
     }
   }
 
@@ -60,5 +63,11 @@ export class Tab1Page {
 
     this.sleepyColor="light";
     this.refreshedColor="light";
+  }
+
+  dismiss() {
+    this.modalController.dismiss({
+      'dismissed': true
+    });
   }
 }
