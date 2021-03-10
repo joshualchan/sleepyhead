@@ -65,6 +65,18 @@ export class RecommenderService {
   onInit() {
     this.authenticationService.user$.subscribe((currentUser) => {
       if (currentUser && currentUser.uid) {
+        this.databaseService.getUser().then( () => {
+          this.ageGroup = this.databaseService.userDoc.ageGroup;
+          this.goal = this.databaseService.userDoc.goal;
+          this.wakeGoal = this.databaseService.userDoc.wakeGoal.toDate();
+
+          this.todaysWakeGoal = new Date();
+          if (this.todaysWakeGoal.getHours() >= 12) { // set to tomorrow if PM
+            this.todaysWakeGoal.setDate(this.todaysWakeGoal.getDate() + 1);
+          }
+          this.todaysWakeGoal.setHours(this.wakeGoal.getHours());
+          this.todaysWakeGoal.setMinutes(this.wakeGoal.getMinutes());
+
           this.authenticationService.getCalendar().then(() => {
             if (this.authenticationService.calendarItems.length > 0) {
               this.firstEvent = new Date(this.authenticationService.calendarItems[0].start.dateTime);
@@ -74,6 +86,7 @@ export class RecommenderService {
               this.firstEvent.setHours(23, 0, 0, 0);
             }
           });
+        }).catch( () => console.log("userDoc not set in db service") );
       }
     });
   }
@@ -118,41 +131,44 @@ export class RecommenderService {
   }
 
   getMaxTimes() {
-    this.times['max'] = [];
-    var latestWakeTime: Date;
-    var sleepTime1: Date;
-    var sleepTime2: Date;
-    var sleepTime3: Date;
+    this.onInit();
+    setTimeout(() => {
+      this.times['max'] = [];
+      var latestWakeTime: Date;
+      var sleepTime1: Date;
+      var sleepTime2: Date;
+      var sleepTime3: Date;
 
-    // calculate wake time, later one(firstEvent - 1, wakeGoal)
-    latestWakeTime = this.todaysWakeGoal;
-    this.todaysWakeGoal.setDate(this.firstEvent.getDate());
-    if (this.firstEvent > this.todaysWakeGoal) {
-      latestWakeTime.setHours(this.firstEvent.getHours());
-    }
+      // calculate wake time, later one(firstEvent - 1, wakeGoal)
+      latestWakeTime = this.todaysWakeGoal;
+      this.todaysWakeGoal.setDate(this.firstEvent.getDate());
+      if (this.firstEvent > this.todaysWakeGoal) {
+        latestWakeTime.setHours(this.firstEvent.getHours());
+      }
 
-    // wake time - max(goal, rec)
-    sleepTime1 = new Date(latestWakeTime);
-    sleepTime1.setHours(latestWakeTime.getHours() - Math.max(this.goal, this.recommended[this.ageGroup]['high']));
-    this.times['max'].push({'sleep': sleepTime1, 'wake': latestWakeTime, 'hours': this.getHoursSlept(sleepTime1, latestWakeTime), 'chosen':false, 'color':'dark'});
+      // wake time - max(goal, rec)
+      sleepTime1 = new Date(latestWakeTime);
+      sleepTime1.setHours(latestWakeTime.getHours() - Math.max(this.goal, this.recommended[this.ageGroup]['high']));
+      this.times['max'].push({'sleep': sleepTime1, 'wake': latestWakeTime, 'hours': this.getHoursSlept(sleepTime1, latestWakeTime), 'chosen':false, 'color':'dark'});
 
-    // low end rec
-    sleepTime2 = new Date(latestWakeTime);
-    var sleepAmount2 = this.getSleepAmount("low"); 
-    sleepTime2.setHours(latestWakeTime.getHours()-sleepAmount2[0]);
-    sleepTime2.setMinutes(latestWakeTime.getMinutes()-sleepAmount2[1]);
-    this.times['max'].push({'sleep': sleepTime2, 'wake': latestWakeTime, 'hours': this.getHoursSlept(sleepTime2, latestWakeTime), 'chosen':false, 'color':'dark'});
+      // low end rec
+      sleepTime2 = new Date(latestWakeTime);
+      var sleepAmount2 = this.getSleepAmount("low"); 
+      sleepTime2.setHours(latestWakeTime.getHours()-sleepAmount2[0]);
+      sleepTime2.setMinutes(latestWakeTime.getMinutes()-sleepAmount2[1]);
+      this.times['max'].push({'sleep': sleepTime2, 'wake': latestWakeTime, 'hours': this.getHoursSlept(sleepTime2, latestWakeTime), 'chosen':false, 'color':'dark'});
 
-    // high end rec
-    sleepTime3 = new Date(latestWakeTime);
-    var sleepAmount3 = this.getSleepAmount("high"); 
-    sleepTime3.setHours(latestWakeTime.getHours()-sleepAmount3[0]);
-    sleepTime3.setMinutes(latestWakeTime.getMinutes()-sleepAmount3[1]);
-    this.times['max'].push({'sleep': sleepTime3, 'wake': latestWakeTime, 'hours': this.getHoursSlept(sleepTime3, latestWakeTime), 'chosen':false, 'color':'dark'});
-    this.times['max'].sort((a, b) => b['hours']-a['hours']);
-    
-    console.log("getMaxTimes", this.times['max']);
-    return this.times['max'];
+      // high end rec
+      sleepTime3 = new Date(latestWakeTime);
+      var sleepAmount3 = this.getSleepAmount("high"); 
+      sleepTime3.setHours(latestWakeTime.getHours()-sleepAmount3[0]);
+      sleepTime3.setMinutes(latestWakeTime.getMinutes()-sleepAmount3[1]);
+      this.times['max'].push({'sleep': sleepTime3, 'wake': latestWakeTime, 'hours': this.getHoursSlept(sleepTime3, latestWakeTime), 'chosen':false, 'color':'dark'});
+      this.times['max'].sort((a, b) => b['hours']-a['hours']);
+      
+      console.log("getMaxTimes", this.times['max']);
+      return this.times['max'];
+    }, 1000);
   }
 
   /* CONSISTENT SLEEP */
@@ -212,6 +228,8 @@ export class RecommenderService {
   }
 
   async getConsistentTimes() {
+    this.onInit();
+    
     this.times['consistent'] = [];
     const wakeTimes = []
     const sleepTimes = []; 
@@ -223,50 +241,52 @@ export class RecommenderService {
         minSleptFeelings.push([dayDoc.data().minSlept, dayDoc.data().feeling]);
       });
     });
-    const avgSleepHours = this.getAvgHourSlept(minSleptFeelings);
-    var hrsSlept = this.getDecToTime(avgSleepHours);
+    setTimeout(() => {
+      const avgSleepHours = this.getAvgHourSlept(minSleptFeelings);
+      var hrsSlept = this.getDecToTime(avgSleepHours);
 
-    // TIME 1: sleep based on wake
-    // calculate wake time 1, earliest(average of last 14 wake times, first event tomorrow) p1
-    var wakeTime1 = this.getAverageTime(wakeTimes);
-    // calculate sleep time 1
-    var sleepTime1 = new Date();
-    sleepTime1.setHours(wakeTime1.getHours()-hrsSlept[0], wakeTime1.getMinutes()-hrsSlept[1], 0, 0);
-    [sleepTime1, wakeTime1] = this.adjustSleepWake(sleepTime1, wakeTime1, avgSleepHours);
-    // p2
-    wakeTime1.setDate(this.firstEvent.getDate());
-    if (wakeTime1 > this.firstEvent)
-      wakeTime1 = this.firstEvent;
-    this.times['consistent'].push({'sleep': sleepTime1, 'wake': wakeTime1, 'hours': this.getHoursSlept(sleepTime1, wakeTime1), 'chosen':false, 'color':'dark'});
+      // TIME 1: sleep based on wake
+      // calculate wake time 1, earliest(average of last 14 wake times, first event tomorrow) p1
+      var wakeTime1 = this.getAverageTime(wakeTimes);
+      // calculate sleep time 1
+      var sleepTime1 = new Date();
+      sleepTime1.setHours(wakeTime1.getHours()-hrsSlept[0], wakeTime1.getMinutes()-hrsSlept[1], 0, 0);
+      [sleepTime1, wakeTime1] = this.adjustSleepWake(sleepTime1, wakeTime1, avgSleepHours);
+      // p2
+      wakeTime1.setDate(this.firstEvent.getDate());
+      if (wakeTime1 > this.firstEvent)
+        wakeTime1 = this.firstEvent;
+      this.times['consistent'].push({'sleep': sleepTime1, 'wake': wakeTime1, 'hours': this.getHoursSlept(sleepTime1, wakeTime1), 'chosen':false, 'color':'dark'});
 
-    // TIME 2: consistent sleep time
-    var adjustedSleepTimes = this.convert(sleepTimes);
-    var sleepTime2 = this.getAverageTime(adjustedSleepTimes); 
-    [sleepTime2] = this.convert([sleepTime2]); // map back to correct hour/min
-    var wakeTime2 = new Date();
-    wakeTime2.setHours(sleepTime2.getHours()+hrsSlept[0], sleepTime2.getMinutes()+hrsSlept[1], 0, 0);
-    [sleepTime2, wakeTime2] = this.adjustSleepWake(sleepTime2, wakeTime2, avgSleepHours);
-    wakeTime2.setDate(this.firstEvent.getDate());
-    if (wakeTime2 > this.firstEvent) {
-      wakeTime2 = this.firstEvent; 
-    }
-    this.times['consistent'].push({'sleep': sleepTime2, 'wake':wakeTime2, 'hours': this.getHoursSlept(sleepTime2, wakeTime2), 'chosen':false, 'color':'dark'});
+      // TIME 2: consistent sleep time
+      var adjustedSleepTimes = this.convert(sleepTimes);
+      var sleepTime2 = this.getAverageTime(adjustedSleepTimes); 
+      [sleepTime2] = this.convert([sleepTime2]); // map back to correct hour/min
+      var wakeTime2 = new Date();
+      wakeTime2.setHours(sleepTime2.getHours()+hrsSlept[0], sleepTime2.getMinutes()+hrsSlept[1], 0, 0);
+      [sleepTime2, wakeTime2] = this.adjustSleepWake(sleepTime2, wakeTime2, avgSleepHours);
+      wakeTime2.setDate(this.firstEvent.getDate());
+      if (wakeTime2 > this.firstEvent) {
+        wakeTime2 = this.firstEvent; 
+      }
+      this.times['consistent'].push({'sleep': sleepTime2, 'wake':wakeTime2, 'hours': this.getHoursSlept(sleepTime2, wakeTime2), 'chosen':false, 'color':'dark'});
 
-    // TIME 3: average of 1 & 2
-    [sleepTime1, sleepTime2] = this.convert([sleepTime1, sleepTime2]); 
-    var sleepTime3 = this.getAverageTime([sleepTime1, sleepTime2]);
-    [sleepTime1, sleepTime2] = this.convert([sleepTime1, sleepTime2]); // we do not actually want to change 1 & 2
-    [sleepTime3] = this.convert([sleepTime3]); // map back to correct hour/min
-    var wakeTime3 = this.getAverageTime([wakeTime1, wakeTime2]);
-    wakeTime3.setDate(this.firstEvent.getDate());
-    if (wakeTime3 > this.firstEvent) {
-      wakeTime3 = this.firstEvent; 
-    }
-    this.times['consistent'].push({'sleep': sleepTime3, 'wake':wakeTime3, 'hours': this.getHoursSlept(sleepTime3, wakeTime3), 'chosen':false, 'color':'dark'});
-    this.times['consistent'].sort((a, b) => a['wake'].getTime() - b['wake'].getTime());
-    
-    console.log("getConsistentTimes", this.times['consistent']);
-    return this.times['consistent'];
+      // TIME 3: average of 1 & 2
+      [sleepTime1, sleepTime2] = this.convert([sleepTime1, sleepTime2]); 
+      var sleepTime3 = this.getAverageTime([sleepTime1, sleepTime2]);
+      [sleepTime1, sleepTime2] = this.convert([sleepTime1, sleepTime2]); // we do not actually want to change 1 & 2
+      [sleepTime3] = this.convert([sleepTime3]); // map back to correct hour/min
+      var wakeTime3 = this.getAverageTime([wakeTime1, wakeTime2]);
+      wakeTime3.setDate(this.firstEvent.getDate());
+      if (wakeTime3 > this.firstEvent) {
+        wakeTime3 = this.firstEvent; 
+      }
+      this.times['consistent'].push({'sleep': sleepTime3, 'wake':wakeTime3, 'hours': this.getHoursSlept(sleepTime3, wakeTime3), 'chosen':false, 'color':'dark'});
+      this.times['consistent'].sort((a, b) => a['wake'].getTime() - b['wake'].getTime());
+      
+      console.log("getConsistentTimes", this.times['consistent']);
+      return this.times['consistent'];
+    }, 1000);
   }
 
   /* OVERALL BEST */
@@ -280,52 +300,55 @@ export class RecommenderService {
   }
   
   getOverallTimes() {
-    this.times['overall'] = [];
-    var sleepTimes = []; 
-    var wakeTimes = []
-    
-    // pure avg of all six above 
-    // get times into list format to pass to avg function
-    Object.entries(this.times).forEach( (list) => {
-      list[1].forEach ( (time) =>{
-        sleepTimes.push(time['sleep']); 
-        wakeTimes.push(time['wake']); 
+    this.onInit();
+    setTimeout(() => {
+      this.times['overall'] = [];
+      var sleepTimes = []; 
+      var wakeTimes = []
+      
+      // pure avg of all six above 
+      // get times into list format to pass to avg function
+      Object.entries(this.times).forEach( (list) => {
+        list[1].forEach ( (time) =>{
+          sleepTimes.push(time['sleep']); 
+          wakeTimes.push(time['wake']); 
+        });
       });
-    });
 
-    var sleepTime1 = this.averageSleepTimes(sleepTimes); 
-    var wakeTime1 = this.getAverageTime(wakeTimes); 
-    this.times['overall'].push({'sleep':sleepTime1, 'wake':wakeTime1, 'hours': this.getHoursSlept(sleepTime1, wakeTime1), 'chosen':false, 'color':'dark'});
+      var sleepTime1 = this.averageSleepTimes(sleepTimes); 
+      var wakeTime1 = this.getAverageTime(wakeTimes); 
+      this.times['overall'].push({'sleep':sleepTime1, 'wake':wakeTime1, 'hours': this.getHoursSlept(sleepTime1, wakeTime1), 'chosen':false, 'color':'dark'});
 
-    // avg of top two in each category
-    sleepTimes = [this.times['max'][0].sleep, this.times['max'][1].sleep, this.times['consistent'][0].sleep, this.times['consistent'][1].sleep];
-    wakeTimes = [this.times['max'][0].wake, this.times['max'][1].wake, this.times['consistent'][0].wake, this.times['consistent'][1].wake];
-    var sleepTime2 = this.averageSleepTimes(sleepTimes); 
-    var wakeTime2 = this.getAverageTime(wakeTimes); 
-    this.times['overall'].push({'sleep':sleepTime2, 'wake':wakeTime2, 'hours': this.getHoursSlept(sleepTime2, wakeTime2), 'chosen':false, 'color':'dark'});
-    
-    // avg of earliest wake times in each category + corresponding avg sleep times
-    this.times['max'].sort( (a, b) => a['wake'].getTime()-b['wake'].getTime());
-    // relative to wake time
-    const earliestMax = this.times['max'][0];
-    const latestMax = this.times['max'][0];
-    this.times['max'].sort((a, b) => b['hours']-a['hours']); // sort back for ranking by hour
-    sleepTimes = [earliestMax.sleep, this.times['consistent'][0].sleep]; // make lists out of top entry in each category 
-    wakeTimes = [earliestMax.wake, this.times['consistent'][0].wake];
-    var sleepTime3 = this.averageSleepTimes(sleepTimes); 
-    var wakeTime3 = this.getAverageTime(wakeTimes); 
-    this.times['overall'].push({'sleep':sleepTime3, 'wake':wakeTime3, 'hours': this.getHoursSlept(sleepTime3, wakeTime3), 'chosen':false, 'color':'dark'});
-    
-    // avg of latest wake times from each category
-    sleepTimes = [latestMax.sleep, this.times['consistent'][2].sleep]; // make lists of out top entry in each category 
-    wakeTimes = [latestMax.wake, this.times['consistent'][2].wake]; 
-    var sleepTime4 = this.averageSleepTimes(sleepTimes);
-    var wakeTime4 = this.getAverageTime(wakeTimes); 
-    this.times['overall'].push({'sleep':sleepTime4, 'wake':wakeTime4, 'hours': this.getHoursSlept(sleepTime4, wakeTime4), 'chosen':false, 'color':'dark'});
-    this.times['overall'].sort( (a, b) => a['wake'].getTime()-b['wake'].getTime());
-    
-    console.log("getOverallTimes", this.times['overall']);
-    return this.times['overall'];
+      // avg of top two in each category
+      sleepTimes = [this.times['max'][0].sleep, this.times['max'][1].sleep, this.times['consistent'][0].sleep, this.times['consistent'][1].sleep];
+      wakeTimes = [this.times['max'][0].wake, this.times['max'][1].wake, this.times['consistent'][0].wake, this.times['consistent'][1].wake];
+      var sleepTime2 = this.averageSleepTimes(sleepTimes); 
+      var wakeTime2 = this.getAverageTime(wakeTimes); 
+      this.times['overall'].push({'sleep':sleepTime2, 'wake':wakeTime2, 'hours': this.getHoursSlept(sleepTime2, wakeTime2), 'chosen':false, 'color':'dark'});
+      
+      // avg of earliest wake times in each category + corresponding avg sleep times
+      this.times['max'].sort( (a, b) => a['wake'].getTime()-b['wake'].getTime());
+      // relative to wake time
+      const earliestMax = this.times['max'][0];
+      const latestMax = this.times['max'][0];
+      this.times['max'].sort((a, b) => b['hours']-a['hours']); // sort back for ranking by hour
+      sleepTimes = [earliestMax.sleep, this.times['consistent'][0].sleep]; // make lists out of top entry in each category 
+      wakeTimes = [earliestMax.wake, this.times['consistent'][0].wake];
+      var sleepTime3 = this.averageSleepTimes(sleepTimes); 
+      var wakeTime3 = this.getAverageTime(wakeTimes); 
+      this.times['overall'].push({'sleep':sleepTime3, 'wake':wakeTime3, 'hours': this.getHoursSlept(sleepTime3, wakeTime3), 'chosen':false, 'color':'dark'});
+      
+      // avg of latest wake times from each category
+      sleepTimes = [latestMax.sleep, this.times['consistent'][2].sleep]; // make lists of out top entry in each category 
+      wakeTimes = [latestMax.wake, this.times['consistent'][2].wake]; 
+      var sleepTime4 = this.averageSleepTimes(sleepTimes);
+      var wakeTime4 = this.getAverageTime(wakeTimes); 
+      this.times['overall'].push({'sleep':sleepTime4, 'wake':wakeTime4, 'hours': this.getHoursSlept(sleepTime4, wakeTime4), 'chosen':false, 'color':'dark'});
+      this.times['overall'].sort( (a, b) => a['wake'].getTime()-b['wake'].getTime());
+      
+      console.log("getOverallTimes", this.times['overall']);
+      return this.times['overall'];
+    }, 1000);
   }
 }
 
