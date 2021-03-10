@@ -62,17 +62,16 @@ export class RecommenderService {
     });
   }
 
-  onInit() {
-    
-          this.authenticationService.getCalendar().then(() => {
-            if (this.authenticationService.calendarItems.length > 0) {
-              this.firstEvent = new Date(this.authenticationService.calendarItems[0].start.dateTime);
-              this.firstEvent.setHours(this.firstEvent.getHours() - 1);
-            } else {
-              this.firstEvent = new Date();
-              this.firstEvent.setHours(23, 0, 0, 0);
-            }
-          });
+  updateFirstEvent() {
+    this.authenticationService.getCalendar().then(() => {
+      if (this.authenticationService.calendarItems.length > 0) {
+        this.firstEvent = new Date(this.authenticationService.calendarItems[0].start.dateTime);
+        this.firstEvent.setHours(this.firstEvent.getHours() - 1);
+      } else {
+        this.firstEvent = new Date();
+        this.firstEvent.setHours(23, 0, 0, 0);
+      }
+    });
   }
 
 
@@ -116,7 +115,7 @@ export class RecommenderService {
   }
 
   getMaxTimes() {
-    this.onInit();
+    this.updateFirstEvent();
     setTimeout(() => {
       this.times['max'] = [];
       var latestWakeTime: Date;
@@ -213,7 +212,7 @@ export class RecommenderService {
   }
 
   async getConsistentTimes() {
-    this.onInit();
+    this.updateFirstEvent();
     
     this.times['consistent'] = [];
     const wakeTimes = []
@@ -285,7 +284,7 @@ export class RecommenderService {
   }
   
   getOverallTimes() {
-    this.onInit();
+    this.updateFirstEvent();
     setTimeout(() => {
       this.times['overall'] = [];
       var sleepTimes = []; 
