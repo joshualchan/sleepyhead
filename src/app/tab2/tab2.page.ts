@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
 import { DatabaseService } from '../services/database.service';
+import { RecommenderService } from '../services/recommender.service';
 import { Tab1Page } from '../tab1/tab1.page';
 import { Tab4Page } from '../tab4/tab4.page';
 
@@ -15,9 +16,23 @@ export class Tab2Page {
 
   constructor(
     private router: Router,
+    private recommenderService: RecommenderService,
     private databaseService: DatabaseService,
     private modalController:ModalController
-  ) {}
+  ) { 
+  }
+
+  ngOnInit() {
+    setTimeout( this.calculateTimes.bind(this), 30000); 
+  }
+
+  calculateTimes() { 
+    this.recommenderService.getMaxTimes(); 
+    console.log(this.recommenderService.getConsistentTimes()); 
+    console.log(this.recommenderService); 
+    console.log(this.recommenderService.times);
+    setTimeout( () => this.recommenderService.getOverallTimes() , 3000);
+  }
 
   public todaysBedtime:string = "12:00 am"; //default value
   public tomsWaketime:string = "8:00 am"; //default value
@@ -27,12 +42,12 @@ export class Tab2Page {
   private wakeTime:number;
 
   // SET BEDTIME/WAKETIME ON SCREEN ======================================
-  public setBedtime(Date):void {
-    this.todaysBedtime = Date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  public setBedtime(date:Date):void {
+    this.todaysBedtime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   } 
 
-  public setWaketime(Date):void {
-    this.todaysBedtime = Date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  public setWaketime(date:Date):void {
+    this.todaysBedtime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   } 
 
 
@@ -67,13 +82,19 @@ export class Tab2Page {
    */
   async chooseTime() {
     const modal = await this.modalController.create({
-      component: Tab4Page
+      component: Tab4Page, 
+      componentProps: {
+        'maxTimes': this.recommenderService.times['max'],
+        'consistentTimes': this.recommenderService.times['consistent'],
+        'overallTimes': this.recommenderService.times['overall']
+        
+      }
     }); 
     
     modal.onDidDismiss().then((data) => {
       console.log(data); 
-      this.setBedtime(data['data']['sleep']); // should be ok bc it is stored as date objects in recommender
-      this.setWaketime(data['data']['wake']); 
+      this.setBedtime(data['data']['chosenTime']['sleep']); // should be ok bc it is stored as date objects in recommender
+      this.setWaketime(data['data']['chosenTime']['wake']); 
     }); 
     //  CHECK IF DATA RETURNS SOMETHING - IF USER CLOSES MODAL WITHOUT CHOOSING A TIME, 
     //        THEN JUST IGNORE AND DON'T CHANGE ANYTHING
