@@ -45,7 +45,7 @@ export class Tab4Page implements OnInit {
   printHoursString(hours:number) {
     var sleepHours = Math.floor(hours);
     hours -= Math.floor(hours);
-    var sleepMins = 60 * hours;
+    var sleepMins = Math.round(60 * hours);
     return sleepHours + " hours, " + sleepMins + " minutes"
   }
 
