@@ -14,7 +14,7 @@
       <br>
       <p class="text ion-no-margin">tomorrow's wake time:</p>
       <p class="time ion-no-margin">{{tomsWaketime}}</p> 
-      <ion-item detail="false" lines="none" button (click)="chooseTime()"> <u slot="start">Change Time</u> </ion-item>
+      <ion-item [attr.disabled]='text!="Sleep"' detail="false" lines="none" button (click)="chooseTime()"> <u slot="start">Change Time</u> </ion-item>
 
     </div>
   </ion-text>
