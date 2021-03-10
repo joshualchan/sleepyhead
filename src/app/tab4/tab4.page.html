@@ -12,18 +12,14 @@
 
 <ion-content>
   <div class="outer">
-    <ion-button shape="round" (click)="getMaxTimes()">get max times</ion-button>
-    <ion-button shape="round" (click)="getConsistentTimes()">get consistent times</ion-button>
-    <ion-button shape="round" (click)="getOverallTimes()">get overall times</ion-button>
-
     <!--SECTION 1 -->
     <h5>to maximize sleep:</h5>
     <hr>
 
     <ion-card *ngFor="let time of times.max; let i=index" [color]=time.color>
       <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'max')">
-        <h2><span class="textLabel">sleep:  </span>{{time.sleep}}</h2>
-        <h2><span class="textLabel">wake:  </span>{{time.wake}}</h2>
+        <h1> {{printDateString(time.sleep)}} to {{printDateString(time.wake)}} </h1>
+        <h2 class="textLabel"> {{printHoursString(time.hours)}}</h2>
       </div>
     </ion-card>
 
@@ -33,8 +29,8 @@
 
     <ion-card *ngFor="let time of times.consistent; let i=index" [color]=time.color>
       <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'consistent')">
-        <h2><span class="textLabel">sleep:  </span>{{time.sleep}}</h2>
-        <h2><span class="textLabel">wake:  </span>{{time.wake}}</h2>
+        <h1> {{printDateString(time.sleep)}} to {{printDateString(time.wake)}} </h1>
+        <h2 class="textLabel"> {{printHoursString(time.hours)}}</h2>
       </div>
     </ion-card>
       
@@ -44,8 +40,8 @@
 
     <ion-card *ngFor="let time of times.overall; let i=index" [color]=time.color>
       <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'overall')">
-        <h2><span class="textLabel">sleep:  </span>{{time.sleep}}</h2>
-        <h2><span class="textLabel">wake:  </span>{{time.wake}}</h2>
+        <h1> {{printDateString(time.sleep)}} to {{printDateString(time.wake)}} </h1>
+        <h2 class="textLabel"> {{printHoursString(time.hours)}}</h2>
       </div>
     </ion-card>
   </div>

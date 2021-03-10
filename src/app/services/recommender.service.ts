@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,18 +41,22 @@ export class RecommenderService {
           this.ageGroup = this.databaseService.userDoc.ageGroup;
           this.goal = this.databaseService.userDoc.goal;
           this.wakeGoal = this.databaseService.userDoc.wakeGoal.toDate();
-
+          console.log("db info receied: ", this.wakeGoal);
           this.todaysWakeGoal = new Date();
           if (this.todaysWakeGoal.getHours() >= 12) { // set to tomorrow if PM
             this.todaysWakeGoal.setDate(this.todaysWakeGoal.getDate() + 1);
           }
+          console.log(this.todaysWakeGoal); 
+          console.log(this.wakeGoal); 
           this.todaysWakeGoal.setHours(this.wakeGoal.getHours());
           this.todaysWakeGoal.setMinutes(this.wakeGoal.getMinutes());
+          console.log(this.todaysWakeGoal); 
 
           this.authenticationService.getCalendar().then(() => {
             if (this.authenticationService.calendarItems.length > 0) {
               this.firstEvent = new Date(this.authenticationService.calendarItems[0].start.dateTime);
               this.firstEvent.setHours(this.firstEvent.getHours() - 1);
+              console.log(this.firstEvent); 
             } else {
               this.firstEvent = new Date();
               this.firstEvent.setHours(23, 0, 0, 0);
@@ -99,7 +104,9 @@ export class RecommenderService {
   }
 
   convert(times:Date[]) {
+    //console.log(times); 
     times.map( (time) => {
+      time = new Date(time); 
       if (time.getHours() < 12) { // AM 
         return time.setHours(time.getHours()+12); 
       } else { // PM
@@ -117,7 +124,8 @@ export class RecommenderService {
     return sleepTimeConverted;
   }
 
-  getMaxTimes() {
+  async getMaxTimes() {
+    console.log("inside getMaxTimes"); 
     this.times['max'] = [];
     var latestWakeTime: Date;
     var sleepTime1: Date;
@@ -126,6 +134,8 @@ export class RecommenderService {
 
     // calculate wake time, later one(firstEvent - 1, wakeGoal)
     latestWakeTime = this.todaysWakeGoal;
+    console.log(this.todaysWakeGoal); 
+    console.log(this.firstEvent); 
     this.todaysWakeGoal.setDate(this.firstEvent.getDate());
     if (this.firstEvent > this.todaysWakeGoal) {
       latestWakeTime.setHours(this.firstEvent.getHours());
@@ -160,6 +170,7 @@ export class RecommenderService {
   getAverageTime (waketimes:Date[]):Date {
     var hours = 0;
     waketimes.forEach(element => {
+      element = new Date(element); 
       hours = hours + element.getHours() + element.getMinutes()/60;
     });
     hours = hours / (waketimes.length);
@@ -279,7 +290,7 @@ export class RecommenderService {
     return avgSleepTime; 
   }
   
-  getOverallTimes() {
+  async getOverallTimes() {
     this.times['overall'] = [];
     var sleepTimes = []; 
     var wakeTimes = []
@@ -326,6 +337,14 @@ export class RecommenderService {
     
     console.log("getOverallTimes", this.times['overall']);
     return this.times['overall'];
+  }
+
+  async getAllTimes() {
+    // this.getData(); 
+    await this.getMaxTimes(); 
+    await this.getConsistentTimes(); 
+    await this.getOverallTimes(); 
+    return this.times; 
   }
 }
 

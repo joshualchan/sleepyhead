@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ThisReceiver } from '@angular/compiler';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { __importDefault } from 'tslib';
 
 import { RecommenderService } from '../services/recommender.service';
 
@@ -9,6 +11,9 @@ import { RecommenderService } from '../services/recommender.service';
   styleUrls: ['./tab4.page.scss'],
 })
 export class Tab4Page implements OnInit {
+  @Input() maxTimes: []
+  @Input() consistentTimes: []
+  @Input() overallTimes: [] 
 
   chosenTime; 
   times = {
@@ -24,26 +29,24 @@ export class Tab4Page implements OnInit {
                 {'sleep':'12:09am', 'wake': '8:00am', 'chosen':false, 'color':'dark'}]
   }
 
-  constructor(private recommenderService: RecommenderService, private modalController:ModalController) { }
+  constructor( private modalController:ModalController) { }
 
   ngOnInit() {
-    this.recommenderService.getMaxTimes(); 
-    this.recommenderService.getConsistentTimes(); 
-    this.recommenderService.getOverallTimes(); 
-    this.times = this.recommenderService.times;
-    console.log(this.times);  
+    this.times['max'] = this.maxTimes; 
+    this.times['consistent'] = this.consistentTimes; 
+    this.times['overall'] = this.overallTimes; 
   }
 
-  getMaxTimes() {
-    this.recommenderService.getMaxTimes();
+
+  printDateString(date:Date):String {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
-  getConsistentTimes() {
-    this.recommenderService.getConsistentTimes();
-  }
-
-  getOverallTimes() {
-    this.recommenderService.getOverallTimes();
+  printHoursString(hours:number) {
+    var sleepHours = Math.floor(hours);
+    hours -= Math.floor(hours);
+    var sleepMins = 60 * hours;
+    return sleepHours + " hours, " + sleepMins + " minutes"
   }
 
   chooseTime(index:number, category:string) {
