@@ -1,3 +1,11 @@
+ion-header {
+    ion-toolbar {
+        ion-button {
+            float: right;
+        }
+    }
+}
+
 ion-content {
     div.outer {
         margin-left: 10%;

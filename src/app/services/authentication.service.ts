@@ -1,17 +1,12 @@
 // this service is actually a authentication AND calendar service
 
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
-// capacitor is ionic's way to interact with the native system
-import { Plugins } from '@capacitor/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 
 declare var gapi: any;
-
-const { Storage } = Plugins; // local storage to store auth status
-const AUTH_KEY = 'false';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +18,6 @@ export class AuthenticationService {
   constructor(public afAuth: AngularFireAuth) {
     this.initClient();
     this.user$ = afAuth.authState;
-    // this.loadAuthStatus();
   }
 
   // Initialize the Google API client with desired scopes
@@ -41,16 +35,6 @@ export class AuthenticationService {
     });
   }
 
-  // used for auto login
-  // async loadAuthStatus() {
-  //   const authStatus = await Storage.get({ key: AUTH_KEY});
-  //   if (authStatus && authStatus.value) {
-  //     this.isAuthenticated.next(true);
-  //   } else {
-  //     this.isAuthenticated.next(false);
-  //   }
-  // }
-
   async login(): Promise<firebase.User> {
     console.log('Logging in with Google');
     const googleAuth = gapi.auth2.getAuthInstance();
@@ -61,8 +45,6 @@ export class AuthenticationService {
 
     const signedInUser = await this.afAuth.signInWithCredential(credential);
     if (signedInUser) {
-      from(Storage.set({ key: AUTH_KEY, value: 'true'}));
-      // this.isAuthenticated.next(true);
       console.log("auth login user:", signedInUser.user);
       this.getCalendar();
       return signedInUser.user;
@@ -71,13 +53,6 @@ export class AuthenticationService {
       return Promise.reject();
     }
   }
-
-  // TODO: include logout in mock up as well
-  // logout(): Promise<void> {
-  //   this.isAuthenticated.next(false);
-  //   return Storage.remove({ key: AUTH_KEY});
-  //   this.afAuth.signOut();
-  // }
 
   async getCalendar() {
     const events = await gapi.client.calendar.events.list({
@@ -93,5 +68,9 @@ export class AuthenticationService {
     tomorrow.setDate(new Date().getDate()+1);
     this.calendarItems = events.result.items
     this.calendarItems = this.calendarItems.filter(event => new Date(event.start.dateTime) < tomorrow)
+  }
+
+  logout() {
+    this.afAuth.signOut();
   }
 }

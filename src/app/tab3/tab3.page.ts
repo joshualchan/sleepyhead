@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
@@ -12,6 +14,8 @@ import { DatabaseService } from '../services/database.service';
 export class Tab3Page {
 
   constructor(
+    private router: Router,
+    private loadingController: LoadingController,
     private authenticationService: AuthenticationService,
     private databaseService: DatabaseService
   ) {
@@ -33,6 +37,14 @@ export class Tab3Page {
 
   translateDateTime(dateTime) {
     return new Date(dateTime).toLocaleString();
+  }
+
+  async logout() {
+    const loading = await this.loadingController.create();
+    await loading.present();
+    this.authenticationService.logout();
+    await loading.dismiss();
+    this.router.navigateByUrl('/login', { replaceUrl: true});
   }
 
 }
