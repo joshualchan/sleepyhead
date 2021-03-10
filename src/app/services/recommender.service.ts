@@ -63,20 +63,7 @@ export class RecommenderService {
   }
 
   onInit() {
-    this.authenticationService.user$.subscribe((currentUser) => {
-      if (currentUser && currentUser.uid) {
-        this.databaseService.getUser().then( () => {
-          this.ageGroup = this.databaseService.userDoc.ageGroup;
-          this.goal = this.databaseService.userDoc.goal;
-          this.wakeGoal = this.databaseService.userDoc.wakeGoal.toDate();
-
-          this.todaysWakeGoal = new Date();
-          if (this.todaysWakeGoal.getHours() >= 12) { // set to tomorrow if PM
-            this.todaysWakeGoal.setDate(this.todaysWakeGoal.getDate() + 1);
-          }
-          this.todaysWakeGoal.setHours(this.wakeGoal.getHours());
-          this.todaysWakeGoal.setMinutes(this.wakeGoal.getMinutes());
-
+    
           this.authenticationService.getCalendar().then(() => {
             if (this.authenticationService.calendarItems.length > 0) {
               this.firstEvent = new Date(this.authenticationService.calendarItems[0].start.dateTime);
@@ -86,10 +73,8 @@ export class RecommenderService {
               this.firstEvent.setHours(23, 0, 0, 0);
             }
           });
-        }).catch( () => console.log("userDoc not set in db service") );
-      }
-    });
   }
+
 
   /* returns array: [sleepHours, sleepMins]
      input: 9.25hrs output: [9, 15]
