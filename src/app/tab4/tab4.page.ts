@@ -12,7 +12,9 @@ export class Tab4Page implements OnInit {
   @Input() maxTimes: []
   @Input() consistentTimes: []
   @Input() overallTimes: [] 
-
+  @Input() displayedTime
+  
+  private category:string; 
   chosenTime; 
   times = {
     'max': [],
@@ -26,6 +28,18 @@ export class Tab4Page implements OnInit {
     this.times['max'] = this.maxTimes; 
     this.times['consistent'] = this.consistentTimes; 
     this.times['overall'] = this.overallTimes; 
+    this.category = this.displayedTime['category'];
+    
+    this.times[this.category].forEach ( (option) => { // highlight displayed time from home page
+      console.log(option); 
+      if (option['sleep'].getTime() == this.displayedTime.sleep.getTime() && option['wake'].getTime() == this.displayedTime.wake.getTime()) {
+        option.sleep = this.displayedTime.sleep;
+        option.wake = this.displayedTime.wake; 
+        option.chosen = true; 
+        option.color = "success"; 
+        console.log(option);
+      }
+    });
   }
 
   printDateString(date:Date):String {
@@ -52,14 +66,15 @@ export class Tab4Page implements OnInit {
     this.chosenTime = this.times[category][index]; 
     this.times[category][index].chosen = true; 
     this.times[category][index].color = "success";
-    
+    this.category = category;
   }
 
   dismiss() {
     // pass back chosen value, if user has one chosen
     this.modalController.dismiss({
       'dismissed': true,
-      'chosenTime': this.chosenTime
+      'chosenTime': this.chosenTime,
+      'category': this.category
     });
   }
 

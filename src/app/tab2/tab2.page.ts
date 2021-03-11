@@ -13,6 +13,13 @@ import { Tab4Page } from '../tab4/tab4.page';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
+  public todaysBedtime:Date
+  public tomsWaketime:Date
+  private category:string = "";
+
+  public text:string = 'Sleep';
+  private sleepTime:number; 
+  private wakeTime:number;
 
   constructor(
     private router: Router,
@@ -20,24 +27,34 @@ export class Tab2Page {
     private databaseService: DatabaseService,
     private loadingController: LoadingController,
     private modalController: ModalController
-  ) {}
+  ) {
+  }
 
-  public todaysBedtime:string = "12:00 am"; //default value
-  public tomsWaketime:string = "8:00 am"; //default value
+  async ngOnInit() {
+    const loading = await this.loadingController.create();
+    await loading.present();
 
-  public text:string = 'Sleep';
-  private sleepTime:number; 
-  private wakeTime:number;
+    const max = await this.recommenderService.getMaxTimes();
+    this.setBedtime(max[0]['sleep']); 
+    this.setWaketime(max[0]['wake']);
+    this.category='max';
+
+    loading.dismiss();
+  }
 
 
   // SET BEDTIME/WAKETIME ON SCREEN ======================================
-  public setBedtime(date:Date):void {
-    this.todaysBedtime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  public setBedtime(date:Date) {
+    this.todaysBedtime = date; 
   } 
 
-  public setWaketime(date:Date):void {
-    this.todaysBedtime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  public setWaketime(date:Date) {
+    this.tomsWaketime = date; 
   } 
+
+  dateToString(date:Date):String {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
 
 
   // BUTTON FUNCTIONS ====================================================
@@ -78,6 +95,7 @@ export class Tab2Page {
     const modal = await this.modalController.create({
       component: Tab4Page, 
       componentProps: {
+        'displayedTime': {'sleep': this.todaysBedtime, 'wake': this.tomsWaketime, 'category': this.category},
         'maxTimes': max,
         'consistentTimes': cons,
         'overallTimes': over
@@ -88,6 +106,7 @@ export class Tab2Page {
       console.log(data); 
       this.setBedtime(data['data']['chosenTime']['sleep']); // should be ok bc it is stored as date objects in recommender
       this.setWaketime(data['data']['chosenTime']['wake']); 
+      this.category = data['data']['category'];
     }).catch(() => console.log("no changed times selected"));
 
     await loading.dismiss();

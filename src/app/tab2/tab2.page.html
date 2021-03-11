@@ -8,11 +8,11 @@
 <ion-content>
   <ion-text color="tertiary">
     <div class="ion-justify-content-center" id="homePgSection">
-      <p class="text ion-no-margin">today's bedtime:</p>
-      <p class="time ion-no-margin">{{todaysBedtime}}</p>
+      <p class="text ion-no-margin">today's sleep time:</p>
+      <p *ngIf="todaysBedtime" class="time ion-no-margin">{{dateToString(todaysBedtime)}}</p>
       <br>
       <p class="text ion-no-margin">tomorrow's wake time:</p>
-      <p class="time ion-no-margin">{{tomsWaketime}}</p> 
+      <p *ngIf="tomsWaketime" class="time ion-no-margin">{{dateToString(tomsWaketime)}}</p> 
       <ion-item [attr.disabled]='text!="Sleep"' detail="false" lines="none" button (click)="chooseTime()"> <u slot="start">change time</u> </ion-item>
     </div>
   </ion-text>
