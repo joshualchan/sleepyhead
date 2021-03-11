@@ -126,7 +126,7 @@ export class RecommenderService {
     // calculate wake time, later one(firstEvent - 1, wakeGoal)
     latestWakeTime = this.todaysWakeGoal;
     this.todaysWakeGoal.setDate(this.firstEvent.getDate());
-    if (this.firstEvent > this.todaysWakeGoal) {
+    if (this.firstEvent < this.todaysWakeGoal) {
       latestWakeTime.setHours(this.firstEvent.getHours());
     }
 
