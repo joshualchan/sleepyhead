@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { LoadingController, ModalController} from '@ionic/angular';
 
 import { DatabaseService } from '../services/database.service';
 import { RecommenderService } from '../services/recommender.service';
@@ -18,21 +18,9 @@ export class Tab2Page {
     private router: Router,
     private recommenderService: RecommenderService,
     private databaseService: DatabaseService,
-    private modalController:ModalController
-  ) { 
-  }
-
-  ngOnInit() {
-    setTimeout( this.calculateTimes.bind(this), 30000); 
-  }
-
-  calculateTimes() { 
-    this.recommenderService.getMaxTimes(); 
-    console.log(this.recommenderService.getConsistentTimes()); 
-    console.log(this.recommenderService); 
-    console.log(this.recommenderService.times);
-    setTimeout( () => this.recommenderService.getOverallTimes() , 3000);
-  }
+    private loadingController: LoadingController,
+    private modalController: ModalController
+  ) {}
 
   public todaysBedtime:string = "12:00 am"; //default value
   public tomsWaketime:string = "8:00 am"; //default value
@@ -40,6 +28,7 @@ export class Tab2Page {
   public text:string = 'Sleep';
   private sleepTime:number; 
   private wakeTime:number;
+
 
   // SET BEDTIME/WAKETIME ON SCREEN ======================================
   public setBedtime(date:Date):void {
@@ -62,7 +51,6 @@ export class Tab2Page {
   sleep():void {
     this.sleepTime = Date.now(); 
     this.text = "I'm Awake"; 
-    //return [new Date(this.sleepTime), -1];
   };
 
   /** returns [sleep time as Date object, wake time as a Date object, total sleep time in minutes, rounded to nearest whole number]
@@ -72,7 +60,6 @@ export class Tab2Page {
     this.text = "Sleep";
     this.databaseService.updateWakeInfo(new Date(this.sleepTime), new Date(this.wakeTime), Math.floor((this.wakeTime-this.sleepTime)/1000/60));
     this.logFeeling();
-    //this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true});
   };
 
   // CALL MODALS 
@@ -81,13 +68,19 @@ export class Tab2Page {
    * brings up modal to choose time, passes back chosen time to display on home screen
    */
   async chooseTime() {
+    const loading = await this.loadingController.create();
+    await loading.present();
+
+    const max = await this.recommenderService.getMaxTimes();
+    const cons = await this.recommenderService.getConsistentTimes();
+    const over = await this.recommenderService.getOverallTimes();
+    
     const modal = await this.modalController.create({
       component: Tab4Page, 
       componentProps: {
-        'maxTimes': this.recommenderService.times['max'],
-        'consistentTimes': this.recommenderService.times['consistent'],
-        'overallTimes': this.recommenderService.times['overall']
-        
+        'maxTimes': max,
+        'consistentTimes': cons,
+        'overallTimes': over
       }
     }); 
     
@@ -95,9 +88,9 @@ export class Tab2Page {
       console.log(data); 
       this.setBedtime(data['data']['chosenTime']['sleep']); // should be ok bc it is stored as date objects in recommender
       this.setWaketime(data['data']['chosenTime']['wake']); 
-    }); 
-    //  CHECK IF DATA RETURNS SOMETHING - IF USER CLOSES MODAL WITHOUT CHOOSING A TIME, 
-    //        THEN JUST IGNORE AND DON'T CHANGE ANYTHING
+    }).catch(() => console.log("no changed times selected"));
+
+    await loading.dismiss();
     return await modal.present(); 
   }
 

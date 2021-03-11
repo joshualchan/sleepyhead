@@ -2,11 +2,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title class="ion-text-center" size="large">sleepyhead</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">
-        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-button (click)="dismiss()"><ion-icon slot="icon-only" name="close-outline"></ion-icon></ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -18,8 +14,9 @@
 
     <ion-card *ngFor="let time of times.max; let i=index" [color]=time.color>
       <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'max')">
-        <h1> {{printDateString(time.sleep)}} to {{printDateString(time.wake)}} </h1>
-        <h2 class="textLabel"> {{printHoursString(time.hours)}}</h2>
+        <h3><span class="textLabel">sleep:  </span>{{printDateString(time.sleep)}}</h3>
+        <h3><span class="textLabel">wake:  </span>{{printDateString(time.wake)}}</h3>
+        <p class="textLabel">{{printHoursString(time.hours)}} of sleep</p>
       </div>
     </ion-card>
 
@@ -29,8 +26,9 @@
 
     <ion-card *ngFor="let time of times.consistent; let i=index" [color]=time.color>
       <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'consistent')">
-        <h1> {{printDateString(time.sleep)}} to {{printDateString(time.wake)}} </h1>
-        <h2 class="textLabel"> {{printHoursString(time.hours)}}</h2>
+        <h3><span class="textLabel">sleep:  </span>{{printDateString(time.sleep)}}</h3>
+        <h3><span class="textLabel">wake:  </span>{{printDateString(time.wake)}}</h3>
+        <p class="textLabel">{{printHoursString(time.hours)}} of sleep</p>
       </div>
     </ion-card>
       
@@ -40,8 +38,9 @@
 
     <ion-card *ngFor="let time of times.overall; let i=index" [color]=time.color>
       <div class="ion-text-center" color="tertiary" button=true (click)="chooseTime(i, 'overall')">
-        <h1> {{printDateString(time.sleep)}} to {{printDateString(time.wake)}} </h1>
-        <h2 class="textLabel"> {{printHoursString(time.hours)}}</h2>
+        <h3><span class="textLabel">sleep:  </span>{{printDateString(time.sleep)}}</h3>
+        <h3><span class="textLabel">wake:  </span>{{printDateString(time.wake)}}</h3>
+        <p class="textLabel">{{printHoursString(time.hours)}} of sleep</p>
       </div>
     </ion-card>
   </div>

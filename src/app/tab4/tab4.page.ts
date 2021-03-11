@@ -3,8 +3,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { __importDefault } from 'tslib';
 
-import { RecommenderService } from '../services/recommender.service';
-
 @Component({
   selector: 'app-tab4',
   templateUrl: './tab4.page.html',
@@ -17,26 +15,18 @@ export class Tab4Page implements OnInit {
 
   chosenTime; 
   times = {
-    'max': [{'sleep':'12:00am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
-            {'sleep':'12:01am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
-            {'sleep':'12:02am', 'wake': '8:00am', 'chosen':false, 'color':'dark'}],
-    'consistent': [{'sleep':'12:03am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
-                  {'sleep':'12:04am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
-                  {'sleep':'12:05am', 'wake': '8:00am', 'chosen':false, 'color':'dark'}],
-    'overall': [{'sleep':'12:06am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
-                {'sleep':'12:07am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
-                {'sleep':'12:08am', 'wake': '8:00am', 'chosen':false, 'color':'dark'},
-                {'sleep':'12:09am', 'wake': '8:00am', 'chosen':false, 'color':'dark'}]
+    'max': [],
+    'consistent': [],
+    'overall': []
   }
 
-  constructor( private modalController:ModalController) { }
+  constructor(private modalController:ModalController) { }
 
   ngOnInit() {
     this.times['max'] = this.maxTimes; 
     this.times['consistent'] = this.consistentTimes; 
     this.times['overall'] = this.overallTimes; 
   }
-
 
   printDateString(date:Date):String {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -67,7 +57,6 @@ export class Tab4Page implements OnInit {
 
   dismiss() {
     // pass back chosen value, if user has one chosen
-    //console.log(this.chosenTime); 
     this.modalController.dismiss({
       'dismissed': true,
       'chosenTime': this.chosenTime
