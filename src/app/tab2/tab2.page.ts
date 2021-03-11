@@ -30,7 +30,8 @@ export class Tab2Page {
   ) {
   }
 
-  async ngOnInit() {
+  
+  async ionViewDidEnter() {
     const loading = await this.loadingController.create();
     await loading.present();
 
