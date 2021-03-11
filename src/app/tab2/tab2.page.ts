@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoadingController, ModalController} from '@ionic/angular';
 
 import { DatabaseService } from '../services/database.service';
+import { RecommenderService } from '../services/recommender.service';
+import { Tab1Page } from '../tab1/tab1.page';
+import { Tab4Page } from '../tab4/tab4.page';
 
 @Component({
   selector: 'app-tab2',
@@ -12,7 +16,10 @@ export class Tab2Page {
 
   constructor(
     private router: Router,
-    private databaseService: DatabaseService
+    private recommenderService: RecommenderService,
+    private databaseService: DatabaseService,
+    private loadingController: LoadingController,
+    private modalController: ModalController
   ) {}
 
   public todaysBedtime:string = "12:00 am"; //default value
@@ -22,13 +29,14 @@ export class Tab2Page {
   private sleepTime:number; 
   private wakeTime:number;
 
+
   // SET BEDTIME/WAKETIME ON SCREEN ======================================
-  public setBedtime(Date):void {
-    this.todaysBedtime = Date.toLocaleTimeString();
+  public setBedtime(date:Date):void {
+    this.todaysBedtime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   } 
 
-  public setWaketime(Date):void {
-    this.todaysBedtime = Date.toLocaleTimeString();
+  public setWaketime(date:Date):void {
+    this.todaysBedtime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   } 
 
 
@@ -43,7 +51,6 @@ export class Tab2Page {
   sleep():void {
     this.sleepTime = Date.now(); 
     this.text = "I'm Awake"; 
-    //return [new Date(this.sleepTime), -1];
   };
 
   /** returns [sleep time as Date object, wake time as a Date object, total sleep time in minutes, rounded to nearest whole number]
@@ -52,8 +59,47 @@ export class Tab2Page {
     this.wakeTime = Date.now();
     this.text = "Sleep";
     this.databaseService.updateWakeInfo(new Date(this.sleepTime), new Date(this.wakeTime), Math.floor((this.wakeTime-this.sleepTime)/1000/60));
-    this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true});
+    this.logFeeling();
   };
+
+  // CALL MODALS 
+
+  /**
+   * brings up modal to choose time, passes back chosen time to display on home screen
+   */
+  async chooseTime() {
+    const loading = await this.loadingController.create();
+    await loading.present();
+
+    const max = await this.recommenderService.getMaxTimes();
+    const cons = await this.recommenderService.getConsistentTimes();
+    const over = await this.recommenderService.getOverallTimes();
+    
+    const modal = await this.modalController.create({
+      component: Tab4Page, 
+      componentProps: {
+        'maxTimes': max,
+        'consistentTimes': cons,
+        'overallTimes': over
+      }
+    }); 
+    
+    modal.onDidDismiss().then((data) => {
+      console.log(data); 
+      this.setBedtime(data['data']['chosenTime']['sleep']); // should be ok bc it is stored as date objects in recommender
+      this.setWaketime(data['data']['chosenTime']['wake']); 
+    }).catch(() => console.log("no changed times selected"));
+
+    await loading.dismiss();
+    return await modal.present(); 
+  }
+
+  async logFeeling() {
+    const modal = await this.modalController.create({
+      component: Tab1Page
+    }); 
+    return await modal.present(); 
+  }
 
 }
 

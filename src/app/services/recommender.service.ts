@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,7 +41,6 @@ export class RecommenderService {
           this.ageGroup = this.databaseService.userDoc.ageGroup;
           this.goal = this.databaseService.userDoc.goal;
           this.wakeGoal = this.databaseService.userDoc.wakeGoal.toDate();
-
           this.todaysWakeGoal = new Date();
           if (this.todaysWakeGoal.getHours() >= 12) { // set to tomorrow if PM
             this.todaysWakeGoal.setDate(this.todaysWakeGoal.getDate() + 1);
