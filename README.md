@@ -1,5 +1,7 @@
 # sleepyhead
 
-CS125 project - Joshua Chan, Lisa Xu, Greta Yu
+Winter 2021 CS 125 Project - Joshua Chan, Lisa Xu, Greta Yu
 
-Figma design can be found here https://www.figma.com/file/KEIOOIjOrRkgwKnoADIVtK/sleepyhead?node-id=243%3A1 
+[Demo](https://youtu.be/i9FeX4IGN5k?t=187)
+
+[Figma Mockup](https://www.figma.com/file/KEIOOIjOrRkgwKnoADIVtK/sleepyhead?node-id=243%3A1)
